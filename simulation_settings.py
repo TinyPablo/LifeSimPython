@@ -2,8 +2,8 @@ import json
 import os
 import random
 from typing import Dict
-
 from utils import get_time_now
+
 
 class SimulationSettings:
     def __init__(self):
@@ -18,13 +18,13 @@ class SimulationSettings:
         self.steps_per_generation = 200
         self.max_generations = 10000000
 
-        self.max_entity_count = 1000 
-        self.brain_size = 6
-        self.max_internal_neurons = 2 # check why with 0 internal neurons there is error
+        self.max_entity_count = 1024
+        self.brain_size = 16
+        self.max_internal_neurons = 4
         self.fresh_minds = 16
         self.gene_mutation_chance = 1/40
         
-        self.video_framerate = 10
+        self.video_framerate = 30
         self.loging_rate = 1/5
 
 

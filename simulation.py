@@ -168,11 +168,11 @@ class Simulation:
         self.populate()
         self.simulation_loop()
 
-    def selection_condition(self, x: int, y: int) -> bool:
-        w: int = settings.grid_width
-        h: int = settings.grid_height
+    # def selection_condition(self, x: int, y: int) -> bool:
+    #     w: int = settings.grid_width
+    #     h: int = settings.grid_height
 
-        return ((x > w - w // 4) and (y > h - h // 4)) or ((x < w // 4) and (y < h // 4))  
+    #     return ((x > w - w // 4) and (y > h - h // 4)) or ((x < w // 4) and (y < h // 4))  
 
     # def selection_condition(self, x: int, y: int) -> bool:
     #     w: int = settings.grid_width
@@ -180,20 +180,20 @@ class Simulation:
 
     #     return ((x > w - w // 4) and (y > h - h // 4)) or ((x < w // 4) and (y < h // 4))  
     
-    # def selection_condition(self, x: int, y: int) -> bool:
-    #     w: int = settings.grid_width
-    #     h: int = settings.grid_height
+    def selection_condition(self, x: int, y: int) -> bool:
+        w: int = settings.grid_width
+        h: int = settings.grid_height
 
-    #     square_w = w // 8
-    #     square_h = h // 8
+        square_w = w // 8
+        square_h = h // 8
 
-    #     return (
-    #         ((w // 2 - square_w // 2 <= x <= w // 2 + square_w // 2) and (y >= h - square_h)) or
-    #         # Left wall center
-    #         ((x <= square_w) and (h // 2 - square_h // 2 <= y <= h // 2 + square_h // 2)) or
-    #         # Right wall center
-    #         ((x >= w - square_w) and (h // 2 - square_h // 2 <= y <= h // 2 + square_h // 2))
-    #     )
+        return (
+            ((w // 2 - square_w // 2 <= x <= w // 2 + square_w // 2) and (y >= h - square_h)) or
+            # Left wall center
+            ((x <= square_w) and (h // 2 - square_h // 2 <= y <= h // 2 + square_h // 2)) or
+            # Right wall center
+            ((x >= w - square_w) and (h // 2 - square_h // 2 <= y <= h // 2 + square_h // 2))
+        )
 
         
     def do_natural_selection(self) -> None:
