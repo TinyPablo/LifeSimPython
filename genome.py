@@ -27,8 +27,11 @@ class Genome:
 
     @staticmethod
     def crossover(genome_a: 'Genome', genome_b: 'Genome') -> 'Genome':
-        half_len_a = len(genome_a.genes) // 2
-        half_len_b = len(genome_b.genes) // 2
+        len_a = len(genome_a.genes)
+        len_b = len(genome_b.genes)
+
+        half_len_a = max(1, len_a // 2)
+        half_len_b = max(1, len_b // 2)
 
         half_a = random.sample(genome_a.genes, half_len_a)
         half_b = random.sample(genome_b.genes, half_len_b)
@@ -37,7 +40,7 @@ class Genome:
 
         for gene in genes:
             gene.try_mutate(settings.gene_mutation_chance)
-
+        
         return Genome(genes=genes)
 
 

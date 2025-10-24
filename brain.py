@@ -78,7 +78,6 @@ class Brain:
                 # print("STATUS <FAILED>")
                 # print(f'Reason: {e}')
 
-        print()
 
 
     def init(self) -> None:
@@ -110,5 +109,4 @@ class Brain:
         try:
             final_action(self.entity)
         except Exception as e:
-            # print(e)
             pass

@@ -12,39 +12,20 @@ class SimulationSettings:
         self.initialize_seed()
         
         
-        self.grid_width = 96
-        self.grid_height = 96
+        self.grid_width = 72
+        self.grid_height = 72
 
         self.steps_per_generation = 200
         self.max_generations = 10000000
 
-        self.max_entity_count = 1024
-        self.brain_size = 16
-        self.max_internal_neurons = 4
-        self.fresh_minds = 16
+        self.max_entity_count = 3000
+        self.brain_size = 1
+        self.max_internal_neurons = 0
+        self.fresh_minds = 32
         self.gene_mutation_chance = 1/40
         
         self.video_framerate = 30
         self.loging_rate = 1/5
-
-
-
-
-        # self.grid_width = 128
-        # self.grid_height = 128
-
-        # self.steps_per_generation = 200
-        # self.max_generations = 10000000
-
-        # self.max_entity_count = 50
-        # self.brain_size = 24
-        # self.max_internal_neurons = 8
-        # self.gene_mutation_chance = 1/100
-        
-        # self.video_framerate = 30
-        # self.loging_rate = 1/40
-
-
 
 
         self.simulation_directory = f"./simulations/{self.seed} {get_time_now()}"

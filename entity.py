@@ -11,7 +11,6 @@ if TYPE_CHECKING:
 class Entity:
     def __init__(self, genome: 'Genome', simulation: 'Simulation', grid: 'Grid') -> None:
         from brain import Brain
-
         self.brain: 'Brain' = Brain(genome, self)
 
         self.transform: Transform = Transform()
@@ -42,8 +41,8 @@ class Entity:
     @property
     def color(self) -> tuple[int, int, int]:
         genes: List[Gene] = self.brain.genome.genes
-        # print(len(genes), self.brain)
         avg_gene: int = int(sum([int(g) for g in genes]) / len(genes))
+        
         return Entity.int_to_color(avg_gene)
 
 

@@ -76,9 +76,12 @@ class Simulation:
 
                     
 
-        
+        # Debug: Visualize the neural network of a random entity.
+        # 1. Copy the printed output into `net.txt`
+        # 2. Run `brain_visualizer.py` to generate the visualization
         print(random.choice([e.brain for e in self.entities]))
 
+        
         self.update_genome_diversity()
         pictures: List[List[List[tuple[int, int, int]]]] = []
         while settings.steps_per_generation >= self.current_step and not self.simulation_ended:
@@ -160,6 +163,7 @@ class Simulation:
 
     def populate(self) -> None:
         self.entities = [Entity(Genome(settings.brain_size), self, self.grid) for _ in range(settings.max_entity_count)]
+        
         for entity in self.entities:
             self.grid.deploy_entity_randomly(entity)
         
@@ -168,32 +172,29 @@ class Simulation:
         self.populate()
         self.simulation_loop()
 
-    # def selection_condition(self, x: int, y: int) -> bool:
-    #     w: int = settings.grid_width
-    #     h: int = settings.grid_height
-
-    #     return ((x > w - w // 4) and (y > h - h // 4)) or ((x < w // 4) and (y < h // 4))  
-
-    # def selection_condition(self, x: int, y: int) -> bool:
-    #     w: int = settings.grid_width
-    #     h: int = settings.grid_height
-
-    #     return ((x > w - w // 4) and (y > h - h // 4)) or ((x < w // 4) and (y < h // 4))  
-    
     def selection_condition(self, x: int, y: int) -> bool:
         w: int = settings.grid_width
         h: int = settings.grid_height
 
-        square_w = w // 8
-        square_h = h // 8
+        return (x > w - w // 8)   
+    
+#     def selection_condition(self, x: int, y: int) -> bool:
+#         w: int = settings.grid_width
+#         h: int = settings.grid_height
 
-        return (
-            ((w // 2 - square_w // 2 <= x <= w // 2 + square_w // 2) and (y >= h - square_h)) or
-            # Left wall center
-            ((x <= square_w) and (h // 2 - square_h // 2 <= y <= h // 2 + square_h // 2)) or
-            # Right wall center
-            ((x >= w - square_w) and (h // 2 - square_h // 2 <= y <= h // 2 + square_h // 2))
-        )
+#         square_w = w // 8
+#         square_h = h // 8
+
+#         return (
+#     ((w // 2 - square_w // 2 <= x <= w // 2 + square_w // 2) and (y >= h - square_h)) or
+    
+#     ((x <= square_w) and (h // 2 - square_h // 2 <= y <= h // 2 + square_h // 2)) or
+    
+#     ((x >= w - square_w) and (h // 2 - square_h // 2 <= y <= h // 2 + square_h // 2)) or
+
+#     ((w // 2 - square_w // 2 <= x <= w // 2 + square_w // 2) and (y <= square_h))
+# )
+
 
         
     def do_natural_selection(self) -> None:
