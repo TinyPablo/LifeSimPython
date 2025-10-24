@@ -6,12 +6,12 @@ from utils import get_time_now
 
 
 class SimulationSettings:
-    def __init__(self):
+    def __init__(self, settings_dict: Dict = None):
+        self.name: str = None
+        
         self.random_seed = False
         self.seed = 0
-        self.initialize_seed()
-        
-        
+    
         self.grid_width = 72
         self.grid_height = 72
 
@@ -19,14 +19,23 @@ class SimulationSettings:
         self.max_generations = 10000000
 
         self.max_entity_count = 3000
-        self.brain_size = 1
+        self.brain_size = 2
         self.max_internal_neurons = 0
         self.fresh_minds = 32
         self.gene_mutation_chance = 1/40
         
         self.video_framerate = 30
-        self.loging_rate = 1/5
+        self.loging_rate = 1/20
 
+        if settings_dict:
+            for key, value in settings_dict.items():
+                if hasattr(self, key):
+                    setattr(self, key, value)
+            
+        self.initialize_seed()
+
+        if not self.name:
+            self.name = f"SIMULATION_{self.seed}"
 
         self.simulation_directory = f"./simulations/{self.seed} {get_time_now()}"
         self.save_settings()
@@ -56,6 +65,4 @@ class SimulationSettings:
                 'loging_rate': self.loging_rate,
                 'simulation_directory': self.simulation_directory
             }
-            json.dump(data, f)
-            
-settings = SimulationSettings()
+            json.dump(data, f, indent=4)

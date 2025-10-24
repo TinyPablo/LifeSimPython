@@ -8,7 +8,7 @@ from grid import Grid
 from neuron import Neuron
 from neuron_type import NeuronType
 from simulation import Simulation
-from simulation_settings import settings
+from simulation_settings import SimulationSettings
 
 
 if TYPE_CHECKING:
@@ -18,27 +18,27 @@ if TYPE_CHECKING:
 # INPUT NEURON FUNCTIONS
 
 def get_location_vertically(entity: Entity) -> float:
-    return 1 - (entity.transform.position_y / settings.grid_height)
+    return 1 - (entity.transform.position_y / entity.simulation.settings.grid_height)
 
 def get_location_horizontally(entity: Entity) -> float:
-    return 1 - (entity.transform.position_x / settings.grid_width)
+    return 1 - (entity.transform.position_x / entity.simulation.settings.grid_width)
 
 def get_distance_north(entity: Entity) -> float:
-    return 1 - (entity.transform.position_y / settings.grid_height)
+    return 1 - (entity.transform.position_y / entity.simulation.settings.grid_height)
 
 def get_distance_east(entity: Entity) -> float:
-    return entity.transform.position_x / settings.grid_width
+    return entity.transform.position_x / entity.simulation.settings.grid_width
 
 def get_distance_south(entity: Entity) -> float:
-    return entity.transform.position_y / settings.grid_height
+    return entity.transform.position_y / entity.simulation.settings.grid_height
 
 def get_distance_west(entity: Entity) -> float:
-    return 1 - (entity.transform.position_x / settings.grid_width)
+    return 1 - (entity.transform.position_x / entity.simulation.settings.grid_width)
 
 def get_age(entity: Entity) -> float:
     simulation: Simulation = entity.simulation
 
-    return simulation.current_step / settings.steps_per_generation
+    return simulation.current_step / entity.simulation.settings.steps_per_generation
 
 def random_float(entity: Entity) -> float:
     return random.random()
@@ -69,7 +69,7 @@ def get_blockage_west(entity: Entity) -> float:
 def oscilator_input(entity: Entity) -> float:
     simulation: Simulation = entity.simulation
 
-    return 0.5 * (math.sin((2 * math.pi * simulation.current_step) / settings.steps_per_generation) + 1)
+    return 0.5 * (math.sin((2 * math.pi * simulation.current_step) / entity.simulation.settings.steps_per_generation) + 1)
 
 
 def meets_condition_input(entity: Entity) -> float:
@@ -82,7 +82,7 @@ def meets_condition_input(entity: Entity) -> float:
 def get_entites_alive(entity: Entity) -> float:
     simulation: Simulation = entity.simulation
 
-    return len(simulation.entities) / settings.max_entity_count
+    return len(simulation.entities) / entity.simulation.settings.max_entity_count
 
 
 # OUTPUT NEURON FUNCTIONS
@@ -185,13 +185,7 @@ output_neuron_definitions: List[Neuron] = [
 ]
 
 
-internal_neuron_definitions: List[Neuron] = [Neuron(f'internal_{i+1}', NeuronType.INTERNAL) for i in range(settings.max_internal_neurons)]
-
-
-
-neuron_definitions: List[Neuron] = [*input_neuron_definitions, *output_neuron_definitions, *internal_neuron_definitions]
-
-
-
-def get_fresh_neurons() -> List[Neuron]:
+def get_fresh_neurons(settings: SimulationSettings) -> List[Neuron]:
+    internal_neuron_definitions: List[Neuron] = [Neuron(f'internal_{i+1}', NeuronType.INTERNAL) for i in range(settings.max_internal_neurons)]
+    neuron_definitions: List[Neuron] = [*input_neuron_definitions, *output_neuron_definitions, *internal_neuron_definitions]
     return deepcopy(neuron_definitions)

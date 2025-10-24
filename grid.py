@@ -6,7 +6,6 @@ import cv2
 import numpy as np
 from cell import Cell
 from direction import Direction
-from simulation_settings import settings
 from PIL import Image
 
 if TYPE_CHECKING:
@@ -26,7 +25,6 @@ class Grid:
             for y in range(self.height)
         )
         return grid_str
-
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -91,10 +89,9 @@ class Grid:
         return picture
 
 
-    @staticmethod
-    def save_video(pictures: List[List[tuple[int, int, int]]], generation: int, survival_rate: float) -> None:
+    def save_video(self, pictures: List[List[tuple[int, int, int]]], generation: int, survival_rate: float) -> None:
         def save() -> None:
-            path: str = f"{settings.simulation_directory}/videos"
+            path: str = f"{self.simulation.settings.simulation_directory}/videos"
             os.makedirs(path, exist_ok=True)
             video_path = f'{path}/gen-{generation} surv-{survival_rate:.2f}.avi'
             
@@ -103,7 +100,7 @@ class Grid:
             height, width = original_height * upscale_factor, original_width * upscale_factor
             
             fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-            video = cv2.VideoWriter(video_path, fourcc, settings.video_framerate, (width, height), isColor=True)
+            video = cv2.VideoWriter(video_path, fourcc, self.simulation.settings.video_framerate, (width, height), isColor=True)
             
             for picture in pictures:
                 frame = np.array(picture, dtype=np.uint8)

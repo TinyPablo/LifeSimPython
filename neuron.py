@@ -36,7 +36,7 @@ class Neuron:
 
         input_names = 'NONE' if input_names == '' else input_names
         output_names = 'NONE' if output_names == '' else output_names
-        return f'NEURON {self.name}" | INPUTS: ({input_names}) OUTPUTS: ({output_names})'
+        return f'NEURON {self.name}" | INPUTS: ({input_names}) OUTPUTS: ({output_names})\n'
     
     def __repr__(self) -> str:
         return self.__str__()

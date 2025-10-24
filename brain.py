@@ -81,7 +81,7 @@ class Brain:
 
 
     def init(self) -> None:
-        self.neurons = get_fresh_neurons()
+        self.neurons = get_fresh_neurons(self.entity.simulation.settings)
         self.connect_neurons()
         Neuron.sort(self.neurons)
         Neuron.filter(self.neurons)
