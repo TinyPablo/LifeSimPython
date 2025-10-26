@@ -39,6 +39,22 @@ Here, evolution isn’t programmed. It **discovers**.
 
 ---
 
+## 🧩 Example: Evolved Behavior
+
+In one run, after several generations, the population developed a collective behavior:  
+most entities moved toward the **east border** of the map.  
+
+Below are examples of their neural structures and movement patterns:
+
+| Generation | Survival Rate (%) | Behavior Snapshot | Random Brain Visualization |
+|-------------|------------------:|------------------|---------------------|
+| 1  | 11.43 | <img src="https://github.com/user-attachments/assets/257fb15a-397d-4fc9-8b6b-dd0705fe76e6" width="260"/> | <img src="https://github.com/user-attachments/assets/3486d1f5-79f2-4070-8808-da411fde1526" width="260"/> |
+| 5  | 54.30 | <img src="https://github.com/user-attachments/assets/f3371afa-08eb-4ec4-b863-06c7c785b66e" width="260"/> | <img src="https://github.com/user-attachments/assets/3d222e8e-8aaf-43dc-b78a-f60508dacd04" width="260"/> |
+| 38 | 89.65 | <img src="https://github.com/user-attachments/assets/53dda159-f36d-4505-acb2-d2dc07e9d41d" width="260"/> | <img src="https://github.com/user-attachments/assets/de55529c-6ff4-41fb-9db7-6bcfb56aa633" width="260"/> |
+| 208 | 96.97 | <img src="https://github.com/user-attachments/assets/095cab59-0c1d-47da-8a2e-154e5320fcb1" width="260"/> | <img src="https://github.com/user-attachments/assets/1a700fd5-5e12-493e-a064-5542c09a5532" width="260"/> |
+
+---
+
 ## 🧬 Key Features
 
 - **Dynamic neural evolution** — networks are not predefined; they emerge from genetic connections.  
