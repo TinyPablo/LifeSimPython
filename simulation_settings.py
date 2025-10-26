@@ -22,10 +22,10 @@ class SimulationSettings:
         self.brain_size = 2
         self.max_internal_neurons = 0
         self.fresh_minds = 32
-        self.gene_mutation_chance = 1/40
+        self.gene_mutation_probability = 1/40
         
         self.video_framerate = 30
-        self.loging_rate = 1/20
+        self.loging_rate = 1/67
 
         if settings_dict:
             for key, value in settings_dict.items():
@@ -37,7 +37,7 @@ class SimulationSettings:
         if not self.name:
             self.name = f"SIMULATION_{self.seed}"
 
-        self.simulation_directory = f"./simulations/{self.seed} {get_time_now()}"
+        self.simulation_directory = f"./simulations/{self.name} {get_time_now()}"
         self.save_settings()
 
     def initialize_seed(self):
@@ -51,6 +51,7 @@ class SimulationSettings:
         os.makedirs(self.simulation_directory, exist_ok=True)
         with open(f"{self.simulation_directory}/settings.json", 'w+') as f:
             data: Dict = {
+                'name': self.name,
                 'random_seed': self.random_seed,
                 'seed': self.seed,
                 'grid_width': self.grid_width,
@@ -60,7 +61,7 @@ class SimulationSettings:
                 'max_entity_count': self.max_entity_count,
                 'brain_size': self.brain_size,
                 'max_internal_neurons': self.max_internal_neurons,
-                'gene_mutation_chance': self.gene_mutation_chance,
+                'gene_mutation_probability': self.gene_mutation_probability,
                 'video_framerate': self.video_framerate,
                 'loging_rate': self.loging_rate,
                 'simulation_directory': self.simulation_directory

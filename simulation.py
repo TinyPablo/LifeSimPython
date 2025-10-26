@@ -20,24 +20,20 @@ class Simulation:
 
         self.survival_rate: float = 0.0
         self.generation_data: Dict[str, int | str] = {}
-        self.avg_brain_size_fraction: float = 0.0
     
 
     def update_survival_rate(self, alive_entities_count: int) -> None:
         self.survival_rate = alive_entities_count / self.settings.max_entity_count * 100
 
-    def log_info(self) -> None:
+    def log_generation_info(self) -> None:
         generation: int = self.current_generation
-        step: int = self.current_step
         safe_entities: float = len([e for e in self.entities if self.selection_condition(e.transform.position_x, e.transform.position_y)]) / self.settings.max_entity_count * 100
         survival_rate: float = self.survival_rate
 
         info: str = (
             f'SIMULATION: {self.settings.name}\n'
             f'GENERATION: {generation}\n'
-            f'STEP: {step}\n'
             f'SAFE ENTITIES: {safe_entities:.2f}%\n'
-            f'AVG BRAIN SIZE UTILIZATION %: {self.avg_brain_size_fraction:.2f}%\n'
             f'PREVIOUS SURVIVAL RATE: {survival_rate:.2f}%\n\n'
         )
 
@@ -64,19 +60,17 @@ class Simulation:
         for entity in self.entities:
             entity.brain.init()
 
-        # Debug: Visualize the neural network of a random entity.
-        # 1. Copy the printed output into `net.txt`
-        # 2. Run `brain_visualizer.py` to generate the visualization
-        print(random.choice([e.brain for e in self.entities]))
-
         
         self.update_genome_diversity()
         pictures: List[List[List[tuple[int, int, int]]]] = []
         while self.settings.steps_per_generation >= self.current_step and not self.simulation_ended:
 
-            if (self.current_step % (1 // self.settings.loging_rate) == 0) or \
-            (self.current_step == 1) or (self.current_step == self.settings.steps_per_generation):
-                self.log_info()
+            if self.current_step == self.settings.steps_per_generation:
+                self.log_generation_info()
+
+            # if (self.current_step % (1 // self.settings.loging_rate) == 0) or \
+            # (self.current_step == 1) or (self.current_step == self.settings.steps_per_generation):
+            #     self.log_info()
             
 
 
@@ -94,18 +88,19 @@ class Simulation:
             
             pictures.append(self.grid.get_picture())
             self.current_step += 1
-    
+
         self.on_generation_end(pictures)
 
 
 
 
     def on_generation_end(self, pictures: List[List[tuple[int, int, int]]]) -> None:
+        self.update_simulation_data()
         self.do_natural_selection()     
         self.reproduce()
         
         self.grid.save_video(pictures, self.current_generation, self.survival_rate)
-        self.update_simulation_data()
+        
         self.place_new_generation_entities()
 
 
@@ -131,9 +126,14 @@ class Simulation:
 
 
     def update_simulation_data(self):
+        #temp
+        print('='*20)
+        print(random.choice([e.brain for e in self.entities]))
+        print("\033[F\033[K"+'='*20)  # remove line - temporary use
+        #temp
         self.generation_data["generation"] = self.current_generation
+        self.generation_data['random_brains_3'] = [str(random.choice([e.brain for e in self.entities])) for _ in range(3)]
         self.generation_data["survival_rate"] = self.survival_rate
-        self.generation_data["average_brain_size"] = self.avg_brain_size_fraction
 
         self.write_simulation_data(self.generation_data)
 
@@ -161,27 +161,51 @@ class Simulation:
     def selection_condition(self, x: int, y: int) -> bool:
         w: int = self.settings.grid_width
         h: int = self.settings.grid_height
+                    
+        return (x > w - w // 12)
 
-        return (x > w - w // 8)   
+    # def selection_condition(self, x: int, y: int) -> bool:
+    #     w: int = self.settings.grid_width
+    #     h: int = self.settings.grid_height
+
+    #     return (x > w - w // 4) and (y > h - h // 4)
+
+    # def selection_condition(self, x: int, y: int) -> bool:
+    #     w: int = self.settings.grid_width
+    #     h: int = self.settings.grid_height
+
+    #     return (x > w - w // 3) and (y > h - h // 3)
     
-#     def selection_condition(self, x: int, y: int) -> bool:
-#         w: int = settings.grid_width
-#         h: int = settings.grid_height
+    # def selection_condition(self, x: int, y: int) -> bool:
+    #     w: int = self.settings.grid_width
+    #     h: int = self.settings.grid_height
 
-#         square_w = w // 8
-#         square_h = h // 8
+    #     return ((x < w // 5 and y < h // 5) or          # top-left
+    #     (x > w - w // 5 and y < h // 5) or      # top-right
+    #     (x < w // 5 and y > h - h // 5) or      # bottom-left
+    #     (x > w - w // 5 and y > h - h // 5))    # bottom-right
 
-#         return (
-#     ((w // 2 - square_w // 2 <= x <= w // 2 + square_w // 2) and (y >= h - square_h)) or
+    # def selection_condition(self, x: int, y: int) -> bool:
+    #     w: int = self.settings.grid_width
+    #     h: int = self.settings.grid_height
+
+    #     # Define the size of the hollow square
+    #     size = min(w, h) // 2  # width/height of the square
+    #     thickness = 4          # how thick the border should be
+
+    #     # Compute square bounds centered in the grid
+    #     left = (w - size) // 2
+    #     right = left + size
+    #     top = (h - size) // 2
+    #     bottom = top + size
+
+    #     # Return True if point is on the border of the square
+    #     on_vertical_border = left <= x <= right and (abs(y - top) < thickness or abs(y - bottom) < thickness)
+    #     on_horizontal_border = top <= y <= bottom and (abs(x - left) < thickness or abs(x - right) < thickness)
+
+    #     return on_vertical_border or on_horizontal_border
+
     
-#     ((x <= square_w) and (h // 2 - square_h // 2 <= y <= h // 2 + square_h // 2)) or
-    
-#     ((x >= w - square_w) and (h // 2 - square_h // 2 <= y <= h // 2 + square_h // 2)) or
-
-#     ((w // 2 - square_w // 2 <= x <= w // 2 + square_w // 2) and (y <= square_h))
-# )
-
-
         
     def do_natural_selection(self) -> None:
         alive_entities = []
@@ -191,7 +215,6 @@ class Simulation:
             else:
                 entity.die()
         self.entities = alive_entities
-
 
 
     def reproduce(self) -> None:
@@ -218,7 +241,7 @@ class Simulation:
                 used_parents.clear()
 
             parent_a, parent_b = random.sample(parents, 2)
-            child_genome: Genome = Genome.crossover(parent_a.brain.genome, parent_b.brain.genome, self.settings.gene_mutation_chance)
+            child_genome: Genome = Genome.crossover(parent_a.brain.genome, parent_b.brain.genome, self.settings.gene_mutation_probability)
 
             entity: Entity = Entity(child_genome, self, self.grid)
             new_entities.append(entity)

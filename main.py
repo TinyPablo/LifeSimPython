@@ -2,36 +2,29 @@ from simulation import Simulation
 from utils import timeit
 import threading
 
+
 @timeit
 def simulation_thread(simulation: Simulation) -> None:
     print(f'\n--- starting simulation "{simulation.settings.name}" ---')
     simulation.start()
 
-@timeit
+
 def main() -> None:
     simulation_configs = [
-        {
-            "name": "sim_1",
-            "seed": 0,
-            "brain_size": 1,
-            "max_entity_count": 500,
-            "max_generations": 5
-        },
-        {
-            "name": "sim_2",
-            "seed": 1,
-            "max_entity_count": 400,
-            "brain_size": 2,
-            "max_generations": 7
-        },
-        {
-            "name": "sim_3",
-            "seed": 2,
-            "max_entity_count": 300,
-            "brain_size": 3,
-            "max_generations": 8
-        }
-    ]
+    {
+        "name": f"sim{seed+1}",
+        "seed": seed,
+        "grid_width": 128,
+        "grid_height": 128,
+        "steps_per_generation": 200,
+        "max_entity_count": 1024,
+        "brain_size": 4,
+        "max_internal_neurons": 1,
+        "fresh_minds": 10,
+        "gene_mutation_probability": 1/10000
+    }
+    for seed in range(1)
+]
 
     threads = []
     for config in simulation_configs:
@@ -41,6 +34,7 @@ def main() -> None:
         
     for t in threads:
         t.start()
+
 
 if __name__ == '__main__':
     main()

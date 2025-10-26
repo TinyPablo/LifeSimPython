@@ -1,0 +1,47 @@
+    def selection_condition(self, x: int, y: int) -> bool:
+        w: int = self.settings.grid_width
+        h: int = self.settings.grid_height
+                    
+        return (x > w - w // 12)
+
+
+    def selection_condition(self, x: int, y: int) -> bool:
+        w: int = self.settings.grid_width
+        h: int = self.settings.grid_height
+
+        return (x > w - w // 4) and (y > h - h // 4)
+
+    def selection_condition(self, x: int, y: int) -> bool:
+        w: int = self.settings.grid_width
+        h: int = self.settings.grid_height
+
+        return (x > w - w // 3) and (y > h - h // 3)
+    
+    def selection_condition(self, x: int, y: int) -> bool:
+        w: int = self.settings.grid_width
+        h: int = self.settings.grid_height
+
+        return ((x < w // 5 and y < h // 5) or          # top-left
+        (x > w - w // 5 and y < h // 5) or      # top-right
+        (x < w // 5 and y > h - h // 5) or      # bottom-left
+        (x > w - w // 5 and y > h - h // 5))    # bottom-right
+
+    def selection_condition(self, x: int, y: int) -> bool:
+        w: int = self.settings.grid_width
+        h: int = self.settings.grid_height
+
+        # Define the size of the hollow square
+        size = min(w, h) // 2  # width/height of the square
+        thickness = 4          # how thick the border should be
+
+        # Compute square bounds centered in the grid
+        left = (w - size) // 2
+        right = left + size
+        top = (h - size) // 2
+        bottom = top + size
+
+        # Return True if point is on the border of the square
+        on_vertical_border = left <= x <= right and (abs(y - top) < thickness or abs(y - bottom) < thickness)
+        on_horizontal_border = top <= y <= bottom and (abs(x - left) < thickness or abs(x - right) < thickness)
+
+        return on_vertical_border or on_horizontal_border

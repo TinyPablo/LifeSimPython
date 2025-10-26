@@ -70,9 +70,8 @@ class Gene:
         n: int = self.gene & 0xFFFF
         return n / 0xFFFF * 8 - 4
     
-    def try_mutate(self, percent_chance: float):
-        if random.uniform(0.0, 100.0) < percent_chance:
-            print('mutated')
+    def try_mutate(self, probability: float):
+        if random.random() < probability:
             self.flip_random_bit()
 
     def flip_random_bit(self) -> None:
@@ -80,7 +79,7 @@ class Gene:
         mask = 1 << bit_position
         self.gene ^= mask
     
-def main() -> None:
+def main() -> None:  # debug purpose
     g: Gene = Gene()
 
     print(g.gene)

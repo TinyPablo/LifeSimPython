@@ -25,7 +25,7 @@ class Genome:
         return iter(self.genes)
 
     @staticmethod
-    def crossover(genome_a: 'Genome', genome_b: 'Genome', mutation_chance: float) -> 'Genome':
+    def crossover(genome_a: 'Genome', genome_b: 'Genome', mutation_probability: float) -> 'Genome':
         len_a = len(genome_a.genes)
         len_b = len(genome_b.genes)
 
@@ -38,6 +38,6 @@ class Genome:
         genes: list[Gene] = [Gene(data.gene) for data in half_a]  + [Gene(data.gene) for data in half_b]
         
         for gene in genes:
-            gene.try_mutate(mutation_chance)
+            gene.try_mutate(mutation_probability)
             
         return Genome(genes=genes)

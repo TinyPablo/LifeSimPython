@@ -93,7 +93,7 @@ class Grid:
         def save() -> None:
             path: str = f"{self.simulation.settings.simulation_directory}/videos"
             os.makedirs(path, exist_ok=True)
-            video_path = f'{path}/gen-{generation} surv-{survival_rate:.2f}.avi'
+            video_path = f'{path}/{self.simulation.settings.name} gen-{generation} surv-{survival_rate:.2f}.avi'
             
             upscale_factor = 4
             original_height, original_width = len(pictures[0]), len(pictures[0][0])

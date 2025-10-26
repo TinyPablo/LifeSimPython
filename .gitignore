@@ -2,3 +2,5 @@ simulations/
 .DS_Store
 .vscode
 __pycache__
+.svg
+.txt

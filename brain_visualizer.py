@@ -2,11 +2,11 @@ import igraph
 
 # load data into a graph
 g = igraph.Graph.Read_Ncol('net.txt', names=True, weights=True)
-print(g)
+# print(g)
 for v in g.vs:
     v['size'] = 30
     v['label'] = v['name']
-    print(v['label'])
+    # print(v['label'])
     if v['name'][0] == 'I':
         v['color'] = 'lightblue'
     elif v['name'][0] == 'O':
@@ -17,7 +17,7 @@ for v in g.vs:
 
 # convert edge weights to color and size
 for e in g.es:
-	print(e['weight'])
+	# print(e['weight'])
 	if e['weight'] < 0:
 		e['color'] = 'lightcoral'
 	elif e['weight'] == 0:
