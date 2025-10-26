@@ -1,12 +1,11 @@
 import os
 import random
 import threading
-from typing import Optional, List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 import cv2
 import numpy as np
 from cell import Cell
 from direction import Direction
-from PIL import Image
 
 if TYPE_CHECKING:
     from entity import Entity
@@ -73,20 +72,24 @@ class Grid:
 
     def get_picture(self) -> List[List[tuple[int, int, int]]]:
         picture = []
-        for y, row in enumerate(self.grid):
+        width = len(self.grid[0])
+        height = len(self.grid)
+
+        for y in range(height):
             picture_row = []
-            for x, cell in enumerate(row):
+            for x in range(width):
+                cell = self.grid[x][y]
                 if cell.is_entity:
                     color = cell.object.color
                 else:
-                    if self.simulation.selection_condition(y, x):
+                    if self.simulation.selection_condition(x, y):
                         color = (144, 238, 144)
                     else:
                         color = (255, 255, 255)
-                    
                 picture_row.append(color)
             picture.append(picture_row)
         return picture
+
 
 
     def save_video(self, pictures: List[List[tuple[int, int, int]]], generation: int, survival_rate: float) -> None:

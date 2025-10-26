@@ -1,14 +1,13 @@
 from typing import Dict, List
 import matplotlib.pyplot as plt
 import math
-from matplotlib.ticker import MaxNLocator
 import json
 from matplotlib.animation import FuncAnimation
 import os
 
 
 paths = [
-    '/Users/pawel/Documents/Python/LifeSimPython/simulations/sim1 26-10-2025 02:09:25'
+    '/Users/pawel/Documents/Python/LifeSimPython/simulations/sim0 26-10-2025 03:36:23'
 ]
 
 

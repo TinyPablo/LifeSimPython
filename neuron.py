@@ -1,5 +1,5 @@
 from math import tanh
-from typing import Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Callable, Dict, List, Optional, Set
 from entity import Entity
 from neuron_type import NeuronType
 
@@ -23,9 +23,6 @@ class Neuron:
 
         self.output: Optional[float] = None 
         self.disabled: bool = False
-
-    # def refresh(self) -> None:
-    #     self.disabled = False
 
     def disable(self) -> None:
         self.disabled = True

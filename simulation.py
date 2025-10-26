@@ -2,7 +2,6 @@ import copy
 import json
 import random
 from typing import Dict, List
-from gene import Gene
 from genome import Genome
 from grid import Grid
 from entity import Entity
@@ -60,7 +59,6 @@ class Simulation:
         for entity in self.entities:
             entity.brain.init()
 
-        
         self.update_genome_diversity()
         pictures: List[List[List[tuple[int, int, int]]]] = []
         while self.settings.steps_per_generation >= self.current_step and not self.simulation_ended:
@@ -68,30 +66,14 @@ class Simulation:
             if self.current_step == self.settings.steps_per_generation:
                 self.log_generation_info()
 
-            # if (self.current_step % (1 // self.settings.loging_rate) == 0) or \
-            # (self.current_step == 1) or (self.current_step == self.settings.steps_per_generation):
-            #     self.log_info()
-            
-
-
-            # self.entities[0].brain.genome = Genome(genes=[Gene(), Gene()])
-            # print(self.entities[0].brain)
-
-            # self.entities[0].brain.init()
-            # print(self.entities[0].brain)
-            # [print(g) for g in self.entities[0].brain.genome.genes]
-            # exit()
-
-
             for entity in self.entities:
-                entity.brain.process()            
+                entity.brain.process()   
+
             
             pictures.append(self.grid.get_picture())
             self.current_step += 1
 
         self.on_generation_end(pictures)
-
-
 
 
     def on_generation_end(self, pictures: List[List[tuple[int, int, int]]]) -> None:
@@ -115,6 +97,7 @@ class Simulation:
         except json.JSONDecodeError:
             with open(simulation_data_path, 'w') as f:
                 return []
+
 
     def write_simulation_data(self, generation_data: Dict) -> None:
         simulation_data_path = f"{self.settings.simulation_directory}/simulation_data.json"
@@ -147,6 +130,7 @@ class Simulation:
 
         print(f'simulation ended | SEED: {self.settings.seed}')
 
+
     def populate(self) -> None:
         self.entities = [Entity(Genome(self.settings.brain_size), self, self.grid) for _ in range(self.settings.max_entity_count)]
         
@@ -158,55 +142,14 @@ class Simulation:
         self.populate()
         self.simulation_loop()
 
+
     def selection_condition(self, x: int, y: int) -> bool:
         w: int = self.settings.grid_width
         h: int = self.settings.grid_height
                     
-        return (x > w - w // 12)
+        return (x < w - w // 4) or (y < h - h // 4)
 
-    # def selection_condition(self, x: int, y: int) -> bool:
-    #     w: int = self.settings.grid_width
-    #     h: int = self.settings.grid_height
-
-    #     return (x > w - w // 4) and (y > h - h // 4)
-
-    # def selection_condition(self, x: int, y: int) -> bool:
-    #     w: int = self.settings.grid_width
-    #     h: int = self.settings.grid_height
-
-    #     return (x > w - w // 3) and (y > h - h // 3)
-    
-    # def selection_condition(self, x: int, y: int) -> bool:
-    #     w: int = self.settings.grid_width
-    #     h: int = self.settings.grid_height
-
-    #     return ((x < w // 5 and y < h // 5) or          # top-left
-    #     (x > w - w // 5 and y < h // 5) or      # top-right
-    #     (x < w // 5 and y > h - h // 5) or      # bottom-left
-    #     (x > w - w // 5 and y > h - h // 5))    # bottom-right
-
-    # def selection_condition(self, x: int, y: int) -> bool:
-    #     w: int = self.settings.grid_width
-    #     h: int = self.settings.grid_height
-
-    #     # Define the size of the hollow square
-    #     size = min(w, h) // 2  # width/height of the square
-    #     thickness = 4          # how thick the border should be
-
-    #     # Compute square bounds centered in the grid
-    #     left = (w - size) // 2
-    #     right = left + size
-    #     top = (h - size) // 2
-    #     bottom = top + size
-
-    #     # Return True if point is on the border of the square
-    #     on_vertical_border = left <= x <= right and (abs(y - top) < thickness or abs(y - bottom) < thickness)
-    #     on_horizontal_border = top <= y <= bottom and (abs(x - left) < thickness or abs(x - right) < thickness)
-
-    #     return on_vertical_border or on_horizontal_border
-
-    
-        
+       
     def do_natural_selection(self) -> None:
         alive_entities = []
         for entity in self.entities:
@@ -230,7 +173,7 @@ class Simulation:
             self.simulation_ended = True
             return      
         
-        for mind in range(self.settings.fresh_minds):
+        for _ in range(self.settings.fresh_minds):
             fresh_mind: Entity = Entity(Genome(self.settings.brain_size), self, self.grid)
             new_entities.append(fresh_mind)
         
