@@ -4,12 +4,15 @@ import threading
 from typing import List, TYPE_CHECKING
 import cv2
 import numpy as np
+
 from cell import Cell
 from direction import Direction
+
 
 if TYPE_CHECKING:
     from entity import Entity
     from simulation import Simulation
+
 
 class Grid:
     def __init__(self, width: int, height: int, simulation: 'Simulation') -> None:
@@ -90,8 +93,6 @@ class Grid:
             picture.append(picture_row)
         return picture
 
-
-
     def save_video(self, pictures: List[List[tuple[int, int, int]]], generation: int, survival_rate: float) -> None:
         def save() -> None:
             path: str = f"{self.simulation.settings.simulation_directory}/videos"
@@ -116,7 +117,6 @@ class Grid:
         
         threading.Thread(target=save).start()
 
-
     def move(self, entity: 'Entity', direction: Direction) -> None:
         x: int = entity.transform.position_x
         y: int = entity.transform.position_y
@@ -137,12 +137,10 @@ class Grid:
     def in_boundaries(self, x: int, y: int) -> bool:
         return 0 <= x < self.width and 0 <= y < self.height
 
-
     def blockage_in_direction(self, entity: 'Entity', direction: Direction) -> bool:
         x: int = entity.transform.position_x + direction.value[0]
         y: int = entity.transform.position_y + direction.value[1]
         return not self.in_boundaries(x, y) or self.grid[x][y].is_occupied
-
 
     @staticmethod 
     def get_absolute_direction(facing_direction: Direction, relative_direction: Direction) -> Direction:
@@ -219,4 +217,5 @@ class Grid:
             (Direction.DOWN_RIGHT, Direction.DOWN_LEFT): Direction.UP,
             (Direction.DOWN_RIGHT, Direction.DOWN_RIGHT): Direction.LEFT
             }
+        
         return absolute_direction_mapping[(facing_direction, relative_direction)]

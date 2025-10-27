@@ -1,37 +1,52 @@
+import threading
+import time
+
+from selection_conditions.enum import SelectionCondition
 from simulation import Simulation
 from utils import timeit
-import threading
 
 
 @timeit
-def simulation_thread(simulation: Simulation) -> None:
+def simulation_thread(simulation: Simulation, delay: str) -> None:
+    time.sleep(delay)
     print(f'\n--- starting simulation "{simulation.settings.name}" ---')
     simulation.start()
 
 
 def main() -> None:
     simulation_configs = [
-    {
-        "name": f"sim{seed+1}",
-        "seed": seed,
-        "grid_width": 128,
-        "grid_height": 128,
-        "steps_per_generation": 200,
-        "max_entity_count": 1024,
-        "brain_size": 4,
-        "max_internal_neurons": 1,
-        "fresh_minds": 10,
-        "gene_mutation_probability": 1/10000
-    }
-    for seed in range(1)
-]
+        {
+            "name": f"sim{seed+1}",
+
+            "random_seed": False,
+            "seed": seed + 1,
+
+            "grid_width": 192,
+            "grid_height": 192,
+
+            "steps_per_generation": 256,
+            "max_generations": 10_000_000,
+            "selection_condition": SelectionCondition.CORNERS.value,
+
+            "max_entity_count": 4096,
+            "brain_size": 1,
+            "max_internal_neurons": 0,
+            "fresh_minds": 1,
+
+            "gene_mutation_probability": 1 / 10_000,
+
+            "video_framerate": 60
+            }
+        for seed in range(1)
+        ]
+
 
     threads = []
-    for config in simulation_configs:
+    for i, config in enumerate(simulation_configs):
         sim = Simulation(config)
-        thread: threading.Thread = threading.Thread(target=simulation_thread, args=(sim,))
+        thread: threading.Thread = threading.Thread(target=simulation_thread, args=(sim, i))
         threads.append(thread)
-        
+
     for t in threads:
         t.start()
 

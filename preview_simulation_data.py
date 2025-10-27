@@ -2,12 +2,15 @@ from typing import Dict, List
 import matplotlib.pyplot as plt
 import math
 import json
-from matplotlib.animation import FuncAnimation
 import os
+from matplotlib.animation import FuncAnimation
 
 
 paths = [
-    '/Users/pawel/Documents/Python/LifeSimPython/simulations/sim0 26-10-2025 03:36:23'
+   '/Users/pawel/Documents/Python/LifeSimPython/simulations/sim1 27-10-2025 01:06:45',
+   '/Users/pawel/Documents/Python/LifeSimPython/simulations/sim2 27-10-2025 01:06:45',
+   '/Users/pawel/Documents/Python/LifeSimPython/simulations/sim3 27-10-2025 01:06:45',
+   '/Users/pawel/Documents/Python/LifeSimPython/simulations/sim4 27-10-2025 01:06:45'
 ]
 
 
@@ -20,6 +23,7 @@ def load_data(path: str):
 
     return simulation_settings, simulation_data
 
+
 def calculate_shannon_index(gene_occurrences: Dict[str, int]) -> float:
     total_occurrences = sum(gene_occurrences.values())
     if total_occurrences == 0:
@@ -28,6 +32,7 @@ def calculate_shannon_index(gene_occurrences: Dict[str, int]) -> float:
         (count / total_occurrences) * math.log(count / total_occurrences)
         for count in gene_occurrences.values() if count > 0
     )
+
 
 def process_data(path: str):
     simulation_settings, simulation_data = load_data(path)
@@ -48,6 +53,7 @@ def process_data(path: str):
         for H in shannon_indices
     ]
     return generations, survival_rates, normalized_diversity, min_shannon, max_shannon
+
 
 def update(frame):
     global paths, axes
@@ -75,6 +81,7 @@ def update(frame):
     ax_all.set_ylim(0, 100)
 
     fig.tight_layout()
+
 
 while True:
     try:

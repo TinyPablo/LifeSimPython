@@ -1,5 +1,6 @@
 import random
 import time
+
 from typing import List, Optional
 from gene import Gene
 

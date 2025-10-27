@@ -1,4 +1,5 @@
 import random
+
 from typing import Optional
 from connection import ConnectionTipType, ConnectionEndType
 
@@ -78,27 +79,3 @@ class Gene:
         bit_position = random.randint(0, 31)
         mask = 1 << bit_position
         self.gene ^= mask
-    
-def main() -> None:  # debug purpose
-    g: Gene = Gene()
-
-    print(g.gene)
-    print(g.conn_tip_neuron_type)
-    print(g.conn_tip_neuron_id)
-    print(g.conn_end_neuron_type)
-    print(g.conn_end_neuron_id)
-    print(g.conn_weight)
-
-    g.flip_random_bit()
- 
- 
-    print(g.gene)
-    print(g.conn_tip_neuron_type)
-    print(g.conn_tip_neuron_id)
-    print(g.conn_end_neuron_type)
-    print(g.conn_end_neuron_id)
-    print(g.conn_weight)
-    print(0xFFFF_FFFF)
-
-if __name__ == '__main__':
-    main()

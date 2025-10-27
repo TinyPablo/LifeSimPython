@@ -4,8 +4,8 @@ from gene import Gene
 from genome import Genome
 from neuron import Neuron
 from neuron_type import NeuronType
-from neurons import get_fresh_neurons
 from entity import Entity
+from neurons import get_fresh_neurons
 
 
 class Brain:
@@ -15,7 +15,6 @@ class Brain:
         
         self.neurons: list[Neuron] = []
         self.brain_str: str = ''
-
 
     def __str__(self) -> str:
         return self.brain_str
@@ -34,11 +33,7 @@ class Brain:
     @property
     def internal_neurons(self) -> List[Neuron]:
         return [n for n in self.neurons if n.type == NeuronType.INTERNAL]
-
-    # def refresh_neurons(self) -> None:
-    #     for neuron in self.neurons:
-    #         neuron.refresh()
-
+    
     def connect_neurons(self) -> None:
         self.brain_str: str = ''
         genes: List[Gene] = self.genome.genes
@@ -69,14 +64,12 @@ class Brain:
                 # print(f'Potential connection weight: <{gene.conn_weight}>')
                 
                 Neuron.connect_neurons(input_neuron, output_neuron, gene.conn_weight) 
-
-
-                self.brain_str += f'{input_neuron.name} {output_neuron.name} {gene.conn_weight:.2f}\n'
                 # print(f"STATUS: <SUCCESS>")
             except ValueError as e:
                 pass
                 # print("STATUS <FAILED>")
                 # print(f'Reason: {e}')
+            self.brain_str += f'{input_neuron.name} {output_neuron.name} {gene.conn_weight:.2f}\n'
 
 
 

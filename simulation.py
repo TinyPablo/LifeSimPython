@@ -1,11 +1,14 @@
 import copy
 import json
 import random
+import time
 from typing import Dict, List
+
 from genome import Genome
 from grid import Grid
 from entity import Entity
 from simulation_settings import SimulationSettings
+from utils import load_selection_condition_module
 
 
 class Simulation:
@@ -16,27 +19,58 @@ class Simulation:
         self.current_step: int = 0
         self.entities: List[Entity] = []
         self.simulation_ended: bool = False
-
         self.survival_rate: float = 0.0
+        self.primary_survival_rate: float = 0.0
         self.generation_data: Dict[str, int | str] = {}
-    
+        self._selection_condition_callable = None
+        self.generation_start_time: float = 0.0
+        
+        if getattr(self.settings, "selection_condition", None):
+            try:
+                mod = load_selection_condition_module(self.settings.selection_condition.value)
+            except Exception as e:
+                raise RuntimeError(f"Failed to load selection condition '{self.settings.selection_condition.value}': {e}")
+
+            if not hasattr(mod, "condition") or not callable(mod.condition):
+                raise RuntimeError(
+                    f"Selection condition module '{self.settings.selection_condition.value}' "
+                    "does not define callable 'condition(x, y, w, h)'"
+                )
+
+        self._selection_condition_callable = mod.condition
+        
+        total_squares = self.settings.grid_width * self.settings.grid_height
+        safe_squares = sum(
+            1
+            for x in range(self.settings.grid_width)
+            for y in range(self.settings.grid_height)
+            if self.selection_condition(x, y)
+        )
+        self.primary_survival_rate = safe_squares / total_squares * 100
 
     def update_survival_rate(self, alive_entities_count: int) -> None:
         self.survival_rate = alive_entities_count / self.settings.max_entity_count * 100
 
-    def log_generation_info(self) -> None:
-        generation: int = self.current_generation
-        safe_entities: float = len([e for e in self.entities if self.selection_condition(e.transform.position_x, e.transform.position_y)]) / self.settings.max_entity_count * 100
-        survival_rate: float = self.survival_rate
+    def log_generation_summary(self, elapsed_time: float, safe_entities_count: int = None) -> None:
+        generation_num = self.current_generation
+        if safe_entities_count is None:
+            safe_entities_count = sum(
+                1 for e in self.entities
+                if self.selection_condition(e.transform.position_x, e.transform.position_y)
+            )
+        safe_entities_percent = safe_entities_count / self.settings.max_entity_count * 100
 
-        info: str = (
-            f'SIMULATION: {self.settings.name}\n'
-            f'GENERATION: {generation}\n'
-            f'SAFE ENTITIES: {safe_entities:.2f}%\n'
-            f'PREVIOUS SURVIVAL RATE: {survival_rate:.2f}%\n\n'
+        log_message = (
+            f"[LOG] Simulation: {self.settings.name}\n"
+            f"[LOG] Generation: {generation_num}\n"
+            f"[LOG] Safe Entities: {safe_entities_count}/{self.settings.max_entity_count} "
+            f"SR {safe_entities_percent:.2f}% / PRS {self.primary_survival_rate:.2f}%\n"
+            f"[LOG] Generation Duration: {elapsed_time:.3f} seconds\n"
+            f"{'-'*50}\n"
         )
 
-        print(info, end='', flush=True)
+        print(log_message, flush=True)
+
 
     def update_genome_diversity(self) -> None:
         self.generation_data['genome_diversity'] = {}
@@ -51,9 +85,8 @@ class Simulation:
                 
                 self.generation_data['genome_diversity'][neuron.name] += 1
 
-
     def generation_loop(self) -> None:
-        
+        self.generation_start_time = time.perf_counter()
         self.current_step = 1
 
         for entity in self.entities:
@@ -62,27 +95,23 @@ class Simulation:
         self.update_genome_diversity()
         pictures: List[List[List[tuple[int, int, int]]]] = []
         while self.settings.steps_per_generation >= self.current_step and not self.simulation_ended:
-
-            if self.current_step == self.settings.steps_per_generation:
-                self.log_generation_info()
-
             for entity in self.entities:
                 entity.brain.process()   
 
-            
             pictures.append(self.grid.get_picture())
             self.current_step += 1
 
         self.on_generation_end(pictures)
 
-
     def on_generation_end(self, pictures: List[List[tuple[int, int, int]]]) -> None:
         self.update_simulation_data()
-        self.do_natural_selection()     
+        self.do_natural_selection()  
+
+        elapsed = time.perf_counter() - self.generation_start_time
+        self.log_generation_summary(elapsed) 
+
         self.reproduce()
-        
         self.grid.save_video(pictures, self.current_generation, self.survival_rate)
-        
         self.place_new_generation_entities()
 
 
@@ -98,7 +127,6 @@ class Simulation:
             with open(simulation_data_path, 'w') as f:
                 return []
 
-
     def write_simulation_data(self, generation_data: Dict) -> None:
         simulation_data_path = f"{self.settings.simulation_directory}/simulation_data.json"
         all_data: List[Dict] = self.load_simulation_data()
@@ -107,19 +135,12 @@ class Simulation:
             all_data.append(generation_data)
             json.dump(all_data, f)
 
-
     def update_simulation_data(self):
-        #temp
-        print('='*20)
-        print(random.choice([e.brain for e in self.entities]))
-        print("\033[F\033[K"+'='*20)  # remove line - temporary use
-        #temp
         self.generation_data["generation"] = self.current_generation
         self.generation_data['random_brains_3'] = [str(random.choice([e.brain for e in self.entities])) for _ in range(3)]
         self.generation_data["survival_rate"] = self.survival_rate
 
         self.write_simulation_data(self.generation_data)
-
 
     def simulation_loop(self) -> None:
         self.current_generation = 1
@@ -130,25 +151,27 @@ class Simulation:
 
         print(f'simulation ended | SEED: {self.settings.seed}')
 
-
     def populate(self) -> None:
         self.entities = [Entity(Genome(self.settings.brain_size), self, self.grid) for _ in range(self.settings.max_entity_count)]
         
         for entity in self.entities:
             self.grid.deploy_entity_randomly(entity)
         
-
     def start(self) -> None:
         self.populate()
         self.simulation_loop()
 
-
     def selection_condition(self, x: int, y: int) -> bool:
         w: int = self.settings.grid_width
         h: int = self.settings.grid_height
-                    
-        return (x < w - w // 4) or (y < h - h // 4)
 
+        if not self._selection_condition_callable:
+            raise RuntimeError(f"selection condition not loaded for simulation '{self.settings.name}'")
+
+        try:
+            return bool(self._selection_condition_callable(x, y, w, h))
+        except Exception as e:
+            raise RuntimeError(f"selection_condition error: {e}")
        
     def do_natural_selection(self) -> None:
         alive_entities = []
@@ -158,18 +181,17 @@ class Simulation:
             else:
                 entity.die()
         self.entities = alive_entities
-
+        self.update_survival_rate(len(self.entities))
+    
 
     def reproduce(self) -> None:
         parents: List[Entity] = copy.copy(self.entities)
         used_parents: List[Entity] = []
 
         new_entities: List[Entity] = []
-            
-        self.update_survival_rate(len(parents))
 
         if len(parents) < 2:
-            print("population went extinct")
+            print(f"[LOG] Population went extinct after {self.current_generation} generations")
             self.simulation_ended = True
             return      
         

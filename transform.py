@@ -18,5 +18,3 @@ class Transform:
 
     def __str__(self) -> str:
         return f'[x: {self.position_x} y: {self.position_y}] {self.direction.name}'
-
-    

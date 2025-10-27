@@ -1,7 +1,9 @@
 from math import tanh
 from typing import Callable, Dict, List, Optional, Set
+
 from entity import Entity
 from neuron_type import NeuronType
+
 
 class Neuron:
     def __init__(self, name: str, type: NeuronType, *, input_func: Optional[Callable] = None, output_func: Optional[Callable] = None) -> None:
