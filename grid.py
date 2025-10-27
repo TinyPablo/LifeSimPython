@@ -99,9 +99,8 @@ class Grid:
             os.makedirs(path, exist_ok=True)
             video_path = f'{path}/{self.simulation.settings.name} gen-{generation} surv-{survival_rate:.2f}.avi'
             
-            upscale_factor = 4
             original_height, original_width = len(pictures[0]), len(pictures[0][0])
-            height, width = original_height * upscale_factor, original_width * upscale_factor
+            height, width = original_height * self.simulation.settings.video_upscale_factor, original_width * self.simulation.settings.video_upscale_factor
             
             fourcc = cv2.VideoWriter_fourcc(*'MJPG')
             video = cv2.VideoWriter(video_path, fourcc, self.simulation.settings.video_framerate, (width, height), isColor=True)
