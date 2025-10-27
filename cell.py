@@ -1,6 +1,7 @@
 from typing import Optional
 from entity import Entity
 
+
 class Cell:
     def __init__(self) -> None:
         self.object: Optional[Entity] = None
@@ -11,7 +12,6 @@ class Cell:
     def reset(self) -> None:
         self.object = None
 
-
     @property
     def is_free(self) -> bool:
         return self.object is None
@@ -19,7 +19,6 @@ class Cell:
     @property
     def is_occupied(self) -> bool:
         return not self.is_free
-    
    
     @property
     def is_entity(self) -> bool:

@@ -1,17 +1,18 @@
 import os
 import random
 import threading
-from typing import Optional, List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 import cv2
 import numpy as np
+
 from cell import Cell
 from direction import Direction
-from simulation_settings import settings
-from PIL import Image
+
 
 if TYPE_CHECKING:
     from entity import Entity
     from simulation import Simulation
+
 
 class Grid:
     def __init__(self, width: int, height: int, simulation: 'Simulation') -> None:
@@ -26,7 +27,6 @@ class Grid:
             for y in range(self.height)
         )
         return grid_str
-
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -75,35 +75,36 @@ class Grid:
 
     def get_picture(self) -> List[List[tuple[int, int, int]]]:
         picture = []
-        for y, row in enumerate(self.grid):
+        width = len(self.grid[0])
+        height = len(self.grid)
+
+        for y in range(height):
             picture_row = []
-            for x, cell in enumerate(row):
+            for x in range(width):
+                cell = self.grid[x][y]
                 if cell.is_entity:
                     color = cell.object.color
                 else:
-                    if self.simulation.selection_condition(y, x):
+                    if self.simulation.selection_condition(x, y):
                         color = (144, 238, 144)
                     else:
                         color = (255, 255, 255)
-                    
                 picture_row.append(color)
             picture.append(picture_row)
         return picture
 
-
-    @staticmethod
-    def save_video(pictures: List[List[tuple[int, int, int]]], generation: int, survival_rate: float) -> None:
+    def save_video(self, pictures: List[List[tuple[int, int, int]]], generation: int, survival_rate: float) -> None:
         def save() -> None:
-            path: str = f"{settings.simulation_directory}/videos"
+            path: str = f"{self.simulation.settings.simulation_directory}/videos"
             os.makedirs(path, exist_ok=True)
-            video_path = f'{path}/gen-{generation} surv-{survival_rate:.2f}.avi'
+            video_path = f'{path}/{self.simulation.settings.name} gen-{generation} surv-{survival_rate:.2f}.avi'
             
             upscale_factor = 4
             original_height, original_width = len(pictures[0]), len(pictures[0][0])
             height, width = original_height * upscale_factor, original_width * upscale_factor
             
             fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-            video = cv2.VideoWriter(video_path, fourcc, settings.video_framerate, (width, height), isColor=True)
+            video = cv2.VideoWriter(video_path, fourcc, self.simulation.settings.video_framerate, (width, height), isColor=True)
             
             for picture in pictures:
                 frame = np.array(picture, dtype=np.uint8)
@@ -115,7 +116,6 @@ class Grid:
             video.release()
         
         threading.Thread(target=save).start()
-
 
     def move(self, entity: 'Entity', direction: Direction) -> None:
         x: int = entity.transform.position_x
@@ -137,12 +137,10 @@ class Grid:
     def in_boundaries(self, x: int, y: int) -> bool:
         return 0 <= x < self.width and 0 <= y < self.height
 
-
     def blockage_in_direction(self, entity: 'Entity', direction: Direction) -> bool:
         x: int = entity.transform.position_x + direction.value[0]
         y: int = entity.transform.position_y + direction.value[1]
         return not self.in_boundaries(x, y) or self.grid[x][y].is_occupied
-
 
     @staticmethod 
     def get_absolute_direction(facing_direction: Direction, relative_direction: Direction) -> Direction:
@@ -219,4 +217,5 @@ class Grid:
             (Direction.DOWN_RIGHT, Direction.DOWN_LEFT): Direction.UP,
             (Direction.DOWN_RIGHT, Direction.DOWN_RIGHT): Direction.LEFT
             }
+        
         return absolute_direction_mapping[(facing_direction, relative_direction)]

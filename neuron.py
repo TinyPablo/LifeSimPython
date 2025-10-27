@@ -1,7 +1,9 @@
 from math import tanh
-from typing import Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Callable, Dict, List, Optional, Set
+
 from entity import Entity
 from neuron_type import NeuronType
+
 
 class Neuron:
     def __init__(self, name: str, type: NeuronType, *, input_func: Optional[Callable] = None, output_func: Optional[Callable] = None) -> None:
@@ -24,9 +26,6 @@ class Neuron:
         self.output: Optional[float] = None 
         self.disabled: bool = False
 
-    # def refresh(self) -> None:
-    #     self.disabled = False
-
     def disable(self) -> None:
         self.disabled = True
 
@@ -36,7 +35,7 @@ class Neuron:
 
         input_names = 'NONE' if input_names == '' else input_names
         output_names = 'NONE' if output_names == '' else output_names
-        return f'NEURON {self.name}" | INPUTS: ({input_names}) OUTPUTS: ({output_names})'
+        return f'NEURON {self.name}" | INPUTS: ({input_names}) OUTPUTS: ({output_names})\n'
     
     def __repr__(self) -> str:
         return self.__str__()

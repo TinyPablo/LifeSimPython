@@ -1,4 +1,16 @@
-simulations/
-.DS_Store
-.vscode
-__pycache__
+# ---- Directories ----
+simulations/          
+.vscode/              
+**/__pycache__/       
+
+# ---- System files ----
+.DS_Store            
+
+# ---- Files ----
+*.svg        
+*.txt
+*.png
+todo.todo
+
+# ---- Exceptions / Special Files ----
+!/selection_conditions/readme.txt
