@@ -1,5 +1,7 @@
 import threading
 import time
+import cProfile
+import pstats
 
 from lifesim.evolution.selection_conditions.enum import SelectionCondition
 from lifesim.core.simulation import Simulation
@@ -24,33 +26,45 @@ def main() -> None:
             "grid_width": 80,
             "grid_height": 80,
 
-            "steps_per_generation": 256,
+            "steps_per_generation": 100,
             "max_generations": 10_000_000,
             "selection_condition": SelectionCondition.CORNERS.value,
 
-            "max_entity_count": 1000,
-            "brain_size": 1,
+            "max_entity_count": 500,
+            "brain_size": 4,
             "max_internal_neurons": 0,
-            "fresh_minds": 1,
+            "fresh_minds": 4,
 
             "gene_mutation_probability": 1 / 10_000,
 
             "video_framerate": 60,
             "video_upscale_factor": 8
-            }
+        }
         for seed in range(1)
-        ]
-
+    ]
 
     threads = []
     for i, config in enumerate(simulation_configs):
         sim = Simulation(config)
-        thread: threading.Thread = threading.Thread(target=simulation_thread, args=(sim, i))
+        thread = threading.Thread(target=simulation_thread, args=(sim, i))
         threads.append(thread)
 
     for t in threads:
         t.start()
 
+    for t in threads:
+        t.join()
+
 
 if __name__ == '__main__':
+    # profiler = cProfile.Profile()
+    # profiler.enable()
+
     main()
+
+    # profiler.disable()
+    # stats = pstats.Stats(profiler)
+    # stats.sort_stats('cumtime').print_stats(400) 
+
+    
+    # stats.dump_stats("profile_results.prof")
