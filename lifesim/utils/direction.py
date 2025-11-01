@@ -1,6 +1,6 @@
-import random
-
 from enum import Enum
+
+from lifesim.utils.rng import rng
 
 
 class Direction(Enum):
@@ -15,4 +15,4 @@ class Direction(Enum):
 
     @staticmethod
     def random() -> 'Direction':
-        return random.choice(list(Direction))
+        return rng.random.choice(list(Direction))

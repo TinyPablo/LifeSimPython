@@ -1,6 +1,4 @@
 from copy import deepcopy
-import math
-import random
 from typing import TYPE_CHECKING, List
 
 from lifesim.utils.direction import Direction
@@ -10,6 +8,7 @@ from lifesim.brain.neuron import Neuron
 from lifesim.brain.neuron_type import NeuronType
 from lifesim.core.simulation import Simulation
 from lifesim.core.simulation_settings import SimulationSettings
+from lifesim.utils.rng import rng
 
 
 if TYPE_CHECKING:
@@ -47,7 +46,7 @@ def get_age(entity: Entity) -> float:
 
 
 def random_float(entity: Entity) -> float:
-    return random.random()
+    return rng.random.random()
 
 
 def get_blockage_forward(entity: Entity) -> float:

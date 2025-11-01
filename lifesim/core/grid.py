@@ -1,5 +1,4 @@
 import os
-import random
 import threading
 from typing import List, TYPE_CHECKING
 import cv2
@@ -7,6 +6,7 @@ import numpy as np
 
 from lifesim.core.cell import Cell
 from lifesim.utils.direction import Direction
+from lifesim.utils.rng import rng
 
 
 if TYPE_CHECKING:
@@ -37,8 +37,8 @@ class Grid:
         max_attempts = self.width * self.height
 
         while attempts < max_attempts:
-            x = random.randint(0, self.width - 1)
-            y = random.randint(0, self.height - 1)
+            x = rng.random.randint(0, self.width - 1)
+            y = rng.random.randint(0, self.height - 1)
 
             if (x, y) in attempted_positions:
                 continue

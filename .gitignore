@@ -14,3 +14,7 @@ todo.todo
 
 # ---- Exceptions / Special Files ----
 !/selection_conditions/readme.txt
+
+# ---- Profiler data ----
+*.prof  
+*.lprof

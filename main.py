@@ -5,6 +5,7 @@ import pstats
 
 from lifesim.evolution.selection_conditions.enum import SelectionCondition
 from lifesim.core.simulation import Simulation
+from lifesim.utils.rng import RNG
 from lifesim.utils.utils import timeit
 
 
@@ -16,12 +17,10 @@ def simulation_thread(simulation: Simulation, delay: str) -> None:
 
 
 def main() -> None:
+    RNG(0)
     simulation_configs = [
         {
-            "name": f"sim{seed+1}",
-
-            "random_seed": False,
-            "seed": seed + 1,
+            "name": f"sim{i+1}",
 
             "grid_width": 80,
             "grid_height": 80,
@@ -40,7 +39,7 @@ def main() -> None:
             "video_framerate": 60,
             "video_upscale_factor": 8
         }
-        for seed in range(1)
+        for i in range(1)
     ]
 
     threads = []
@@ -57,14 +56,17 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    # profiler = cProfile.Profile()
-    # profiler.enable()
+    measure = False
+    if measure:
+        profiler = cProfile.Profile()
+        profiler.enable()
 
     main()
 
-    # profiler.disable()
-    # stats = pstats.Stats(profiler)
-    # stats.sort_stats('cumtime').print_stats(400) 
+    if measure:
+        profiler.disable()
+        stats = pstats.Stats(profiler)
+        stats.sort_stats('cumtime').print_stats(60) 
 
-    
-    # stats.dump_stats("profile_results.prof")
+        
+        stats.dump_stats("profile_results.prof")

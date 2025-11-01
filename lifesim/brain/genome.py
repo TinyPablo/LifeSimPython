@@ -1,8 +1,6 @@
-import random
-import time
-
 from typing import List, Optional
 from lifesim.brain.gene import Gene
+from lifesim.utils.rng import rng
 
 class Genome:
     def __init__(self, size: Optional[int] = None, genes: Optional[list[Gene]] = None) -> None:
@@ -32,8 +30,8 @@ class Genome:
         half_len_a = max(1, len_a // 2)
         half_len_b = max(1, len_b // 2)
 
-        half_a = random.sample(genome_a.genes, half_len_a)
-        half_b = random.sample(genome_b.genes, half_len_b)
+        half_a = rng.random.sample(genome_a.genes, half_len_a)
+        half_b = rng.random.sample(genome_b.genes, half_len_b)
         
         genes: list[Gene] = [Gene(data.gene) for data in half_a]  + [Gene(data.gene) for data in half_b]
         

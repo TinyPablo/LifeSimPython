@@ -1,7 +1,6 @@
 import copy
 import json
 import math
-import random
 import time
 from typing import Dict, List
 
@@ -10,6 +9,7 @@ from lifesim.core.grid import Grid
 from lifesim.core.entity import Entity
 from lifesim.core.simulation_settings import SimulationSettings
 from lifesim.utils.utils import load_selection_condition_module
+from lifesim.utils.rng import rng
 
 
 class Simulation:
@@ -74,7 +74,7 @@ class Simulation:
             self.generation_loop()
             self.current_generation += 1
 
-        print(f'simulation ended | SEED: {self.settings.seed}')
+        print(f'[LOG] simulation ended')
 
     def generation_loop(self) -> None:
         self.generation_start_time = time.perf_counter()
@@ -109,7 +109,7 @@ class Simulation:
 
     def update_simulation_data(self):
         self.generation_data["generation"] = self.current_generation
-        self.generation_data['random_brains_3'] = [str(random.choice([e.brain for e in self.entities])) for _ in range(3)]
+        self.generation_data['random_brains_3'] = [str(rng.random.choice([e.brain for e in self.entities])) for _ in range(3)]
         self.generation_data["survival_rate"] = self.survival_rate
 
         self.write_simulation_data(self.generation_data)
@@ -165,7 +165,7 @@ class Simulation:
                 parents += used_parents
                 used_parents.clear()
 
-            parent_a, parent_b = random.sample(parents, 2)
+            parent_a, parent_b = rng.random.sample(parents, 2)
             child_genome: Genome = Genome.crossover(parent_a.brain.genome, parent_b.brain.genome, self.settings.gene_mutation_probability)
 
             entity: Entity = Entity(child_genome, self)

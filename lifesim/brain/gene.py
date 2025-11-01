@@ -1,7 +1,6 @@
-import random
-
 from typing import Optional
 from lifesim.brain.connection import ConnectionTipType, ConnectionEndType
+from lifesim.utils.rng import rng
 
 
 class Gene:
@@ -23,7 +22,7 @@ class Gene:
         self._gene = value
 
     def randomize(self) -> None:
-        self.gene: int = random.randint(0, 0xFFFF_FFFF)
+        self.gene: int = rng.random.randint(0, 0xFFFF_FFFF)
 
     def __int__(self) -> int:
         return self.gene
@@ -72,10 +71,10 @@ class Gene:
         return n / 0xFFFF * 8 - 4
     
     def try_mutate(self, probability: float):
-        if random.random() < probability:
+        if rng.random.random() < probability:
             self.flip_random_bit()
 
     def flip_random_bit(self) -> None:
-        bit_position = random.randint(0, 31)
+        bit_position = rng.random.randint(0, 31)
         mask = 1 << bit_position
         self.gene ^= mask
