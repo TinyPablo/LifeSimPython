@@ -43,8 +43,7 @@ def get_distance_west(entity: Entity) -> float:
 
 
 def get_age(entity: Entity) -> float:
-    simulation: Simulation = entity.simulation
-    return simulation.current_step / simulation.settings.steps_per_generation
+    return entity.simulation.cached_inputs['age']
 
 
 def random_float(entity: Entity) -> float:
@@ -78,8 +77,7 @@ def get_blockage_west(entity: Entity) -> float:
 
 
 def oscilator_input(entity: Entity) -> float:
-    simulation: Simulation = entity.simulation
-    return 0.5 * (math.sin((2 * math.pi * simulation.current_step) / simulation.settings.steps_per_generation) + 1)
+    return entity.simulation.cached_inputs['oscillator']
 
 
 def meets_condition_input(entity: Entity) -> float:

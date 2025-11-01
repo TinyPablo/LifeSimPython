@@ -1,5 +1,6 @@
 import copy
 import json
+import math
 import random
 import time
 from typing import Dict, List
@@ -22,7 +23,7 @@ class Simulation:
         self.survival_rate: float = 0.0
         self.generation_data: Dict[str, int | str] = {}
         self.generation_start_time: float = 0.0
-        self.timer_start = None
+        self.cached_inputs: dict[str, float] = {}
         
         if getattr(self.settings, "selection_condition", None):
             try:
@@ -51,7 +52,6 @@ class Simulation:
         return safe_squares / total_squares * 100
     
     def start(self) -> None:
-        self.timer_start = time.perf_counter()
         self.populate()
         self.simulation_loop()
         
@@ -69,8 +69,8 @@ class Simulation:
         self.current_generation = 1
     
         while not self.simulation_ended and self.current_generation < (self.settings.max_generations + 1):
-            # if self.current_generation == 6:
-            #     break
+            if self.current_generation == 6:
+                break
             self.generation_loop()
             self.current_generation += 1
 
@@ -85,6 +85,8 @@ class Simulation:
 
         pictures: List[List[List[tuple[int, int, int]]]] = []
         while self.settings.steps_per_generation >= self.current_step and not self.simulation_ended:
+            self.update_cached_inputs()
+            
             for entity in self.entities:
                 entity.brain.process()   
 
@@ -93,8 +95,6 @@ class Simulation:
             self.current_step += 1
 
         self.on_generation_end(pictures)
-        if self.current_generation == 10:
-            print(time.perf_counter() - self.timer_start)
                 
     def on_generation_end(self, pictures: List[List[tuple[int, int, int]]]) -> None:
         self.update_simulation_data()
@@ -220,3 +220,9 @@ class Simulation:
         except json.JSONDecodeError:
             with open(simulation_data_path, 'w') as f:
                 return []
+            
+    def update_cached_inputs(self):  # call once per step
+        self.cached_inputs['age'] = self.current_step / self.settings.steps_per_generation
+        self.cached_inputs['oscillator'] = 0.5 * (
+            math.sin(2 * math.pi / self.settings.steps_per_generation * self.current_step) + 1
+        )
