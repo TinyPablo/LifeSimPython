@@ -1,6 +1,7 @@
 import copy
 import json
 import math
+import threading
 import time
 from typing import Dict, List
 
@@ -13,8 +14,15 @@ from lifesim.utils.rng import rng
 
 
 class Simulation:
+    _id_counter_lock = threading.Lock()
+    _id_counter = 1
+    
     def __init__(self, settings: dict = None) -> None:
-        self.settings = SimulationSettings(settings)
+        with Simulation._id_counter_lock:
+            self.id = Simulation._id_counter
+            Simulation._id_counter += 1
+            
+        self.settings = SimulationSettings(self.id, settings)
         self.grid: 'Grid' = Grid(self.settings.grid_width, self.settings.grid_height, self)
         self.current_generation: int = 0
         self.current_step: int = 0

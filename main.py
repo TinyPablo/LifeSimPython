@@ -17,11 +17,8 @@ def simulation_thread(simulation: Simulation, delay: str) -> None:
 
 
 def main() -> None:
-    RNG(0)
     simulation_configs = [
         {
-            "name": f"sim{i+1}",
-
             "grid_width": 80,
             "grid_height": 80,
 
