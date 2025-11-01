@@ -3,17 +3,17 @@ import math
 import random
 from typing import TYPE_CHECKING, List
 
-from direction import Direction
-from entity import Entity
-from grid import Grid
-from neuron import Neuron
-from neuron_type import NeuronType
-from simulation import Simulation
-from simulation_settings import SimulationSettings
+from lifesim.utils.direction import Direction
+from lifesim.core.entity import Entity
+from lifesim.core.grid import Grid
+from lifesim.brain.neuron import Neuron
+from lifesim.brain.neuron_type import NeuronType
+from lifesim.core.simulation import Simulation
+from lifesim.core.simulation_settings import SimulationSettings
 
 
 if TYPE_CHECKING:
-    from entity import Entity
+    from lifesim.core.entity import Entity
 
 
 # ======= INPUT NEURON FUNCTIONS =======

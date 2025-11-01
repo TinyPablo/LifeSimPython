@@ -2,8 +2,7 @@ import random
 import time
 
 from typing import List, Optional
-from gene import Gene
-
+from lifesim.brain.gene import Gene
 
 class Genome:
     def __init__(self, size: Optional[int] = None, genes: Optional[list[Gene]] = None) -> None:

@@ -1,8 +1,8 @@
 from math import tanh
 from typing import Callable, Dict, List, Optional, Set
 
-from entity import Entity
-from neuron_type import NeuronType
+from lifesim.core.entity import Entity
+from lifesim.brain.neuron_type import NeuronType
 
 
 class Neuron:

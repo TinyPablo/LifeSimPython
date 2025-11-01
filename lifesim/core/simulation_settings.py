@@ -3,8 +3,8 @@ import os
 import random
 from typing import Dict
 
-from selection_conditions.enum import SelectionCondition
-from utils import get_time_now
+from lifesim.evolution.selection_conditions.enum import SelectionCondition
+from lifesim.utils.utils import get_time_now
 
 
 class SimulationSettings:

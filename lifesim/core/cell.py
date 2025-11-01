@@ -1,5 +1,5 @@
 from typing import Optional
-from entity import Entity
+from lifesim.core.entity import Entity
 
 
 class Cell:

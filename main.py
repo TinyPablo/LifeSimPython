@@ -1,9 +1,9 @@
 import threading
 import time
 
-from selection_conditions.enum import SelectionCondition
-from simulation import Simulation
-from utils import timeit
+from lifesim.evolution.selection_conditions.enum import SelectionCondition
+from lifesim.core.simulation import Simulation
+from lifesim.utils.utils import timeit
 
 
 @timeit

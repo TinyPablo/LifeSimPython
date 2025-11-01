@@ -1,18 +1,18 @@
 from typing import List, TYPE_CHECKING, Tuple
 
-from gene import Gene
-from transform import Transform
-from genome import Genome
+from lifesim.brain.gene import Gene
+from lifesim.core.transform import Transform
+from lifesim.brain.genome import Genome
 
 
 if TYPE_CHECKING:
-    from grid import Grid
-    from simulation import Simulation
+    from lifesim.core.grid import Grid
+    from lifesim.core.simulation import Simulation
 
 
 class Entity:
     def __init__(self, genome: 'Genome', simulation: 'Simulation') -> None:
-        from brain import Brain
+        from lifesim.brain.brain import Brain
         self.brain: 'Brain' = Brain(genome, self)
         self.transform: Transform = Transform()
         self.dead: bool = False

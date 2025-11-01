@@ -1,4 +1,4 @@
-from direction import Direction
+from lifesim.utils.direction import Direction
 
 
 class Transform:

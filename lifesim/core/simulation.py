@@ -4,11 +4,11 @@ import random
 import time
 from typing import Dict, List
 
-from genome import Genome
-from grid import Grid
-from entity import Entity
-from simulation_settings import SimulationSettings
-from utils import load_selection_condition_module
+from lifesim.brain.genome import Genome
+from lifesim.core.grid import Grid
+from lifesim.core.entity import Entity
+from lifesim.core.simulation_settings import SimulationSettings
+from lifesim.utils.utils import load_selection_condition_module
 
 
 class Simulation:

@@ -5,13 +5,13 @@ from typing import List, TYPE_CHECKING
 import cv2
 import numpy as np
 
-from cell import Cell
-from direction import Direction
+from lifesim.core.cell import Cell
+from lifesim.utils.direction import Direction
 
 
 if TYPE_CHECKING:
-    from entity import Entity
-    from simulation import Simulation
+    from lifesim.core.entity import Entity
+    from lifesim.core.simulation import Simulation
 
 
 class Grid:

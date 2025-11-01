@@ -1,11 +1,11 @@
 from typing import List, Callable
-from connection import ConnectionEndType, ConnectionTipType
-from gene import Gene
-from genome import Genome
-from neuron import Neuron
-from neuron_type import NeuronType
-from entity import Entity
-from neurons import get_fresh_neurons
+from lifesim.brain.connection import ConnectionEndType, ConnectionTipType
+from lifesim.brain.gene import Gene
+from lifesim.brain.genome import Genome
+from lifesim.brain.neuron import Neuron
+from lifesim.brain.neuron_type import NeuronType
+from lifesim.core.entity import Entity
+from lifesim.brain.neurons import get_fresh_neurons
 
 
 class Brain:
