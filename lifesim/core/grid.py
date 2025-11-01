@@ -5,13 +5,13 @@ from typing import List, TYPE_CHECKING
 import cv2
 import numpy as np
 
-from cell import Cell
-from direction import Direction
+from lifesim.core.cell import Cell
+from lifesim.utils.direction import Direction
 
 
 if TYPE_CHECKING:
-    from entity import Entity
-    from simulation import Simulation
+    from lifesim.core.entity import Entity
+    from lifesim.core.simulation import Simulation
 
 
 class Grid:
@@ -99,9 +99,8 @@ class Grid:
             os.makedirs(path, exist_ok=True)
             video_path = f'{path}/{self.simulation.settings.name} gen-{generation} surv-{survival_rate:.2f}.avi'
             
-            upscale_factor = 4
             original_height, original_width = len(pictures[0]), len(pictures[0][0])
-            height, width = original_height * upscale_factor, original_width * upscale_factor
+            height, width = original_height * self.simulation.settings.video_upscale_factor, original_width * self.simulation.settings.video_upscale_factor
             
             fourcc = cv2.VideoWriter_fourcc(*'MJPG')
             video = cv2.VideoWriter(video_path, fourcc, self.simulation.settings.video_framerate, (width, height), isColor=True)

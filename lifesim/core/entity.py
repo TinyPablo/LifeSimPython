@@ -1,23 +1,22 @@
 from typing import List, TYPE_CHECKING, Tuple
 
-from gene import Gene
-from transform import Transform
-from genome import Genome
+from lifesim.brain.gene import Gene
+from lifesim.core.transform import Transform
+from lifesim.brain.genome import Genome
 
 
 if TYPE_CHECKING:
-    from grid import Grid
-    from simulation import Simulation
+    from lifesim.core.grid import Grid
+    from lifesim.core.simulation import Simulation
 
 
 class Entity:
-    def __init__(self, genome: 'Genome', simulation: 'Simulation', grid: 'Grid') -> None:
-        from brain import Brain
+    def __init__(self, genome: 'Genome', simulation: 'Simulation') -> None:
+        from lifesim.brain.brain import Brain
         self.brain: 'Brain' = Brain(genome, self)
         self.transform: Transform = Transform()
         self.dead: bool = False
         self.simulation: 'Simulation' = simulation
-        self.grid: 'Grid' = grid
 
     def __str__(self) -> str:
         return f'E {self.dead}'
@@ -44,7 +43,7 @@ class Entity:
         return Entity.int_to_color(avg_gene)
 
     def die(self) -> None:
-        self.grid.remove_entity(self.transform.position_x, self.transform.position_y)
+        self.simulation.grid.remove_entity(self.transform.position_x, self.transform.position_y)
         self.dead = True
 
     def set_position(self, x: int, y: int) -> None:

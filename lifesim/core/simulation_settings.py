@@ -3,8 +3,8 @@ import os
 import random
 from typing import Dict
 
-from selection_conditions.enum import SelectionCondition
-from utils import get_time_now
+from lifesim.evolution.selection_conditions.enum import SelectionCondition
+from lifesim.utils.utils import get_time_now
 
 
 class SimulationSettings:
@@ -29,6 +29,7 @@ class SimulationSettings:
         self.gene_mutation_probability: float = 1 / 10_000
 
         self.video_framerate: int = 30
+        self.video_upscale_factor: int = 8
 
         if settings_dict:
             for key, value in settings_dict.items():
@@ -79,7 +80,8 @@ class SimulationSettings:
                 "gene_mutation_probability": self.gene_mutation_probability
             },
             "video": {
-                "video_framerate": self.video_framerate
+                "video_framerate": self.video_framerate,
+                "video_upscale_factor": self.video_upscale_factor
             },
             "directories": {
                 "simulation_directory": self.simulation_directory

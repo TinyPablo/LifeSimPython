@@ -1,7 +1,7 @@
 import random
 
 from typing import Optional
-from connection import ConnectionTipType, ConnectionEndType
+from lifesim.brain.connection import ConnectionTipType, ConnectionEndType
 
 
 class Gene:
