@@ -1,13 +1,12 @@
 import json
 import os
-from typing import Dict
 
 from lifesim.evolution.selection_conditions.enum import SelectionCondition
 from lifesim.utils.utils import get_time_now
 
 
 class SimulationSettings:
-    def __init__(self, simulation_id: int, settings_dict: Dict = None):
+    def __init__(self, simulation_id: int, settings_dict: dict = None):
         self.name: str = f'simulation_{simulation_id}'
 
         self.grid_width: int = 128
@@ -40,7 +39,7 @@ class SimulationSettings:
 
     def save_settings(self) -> None:
         os.makedirs(self.simulation_directory, exist_ok=True)
-        data: Dict = {
+        data: dict = {
             "general": {
                 "name": self.name
             },

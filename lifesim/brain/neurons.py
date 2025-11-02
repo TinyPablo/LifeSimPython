@@ -1,5 +1,4 @@
-from copy import deepcopy
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 from lifesim.utils.direction import Direction
 from lifesim.core.entity import Entity
@@ -157,7 +156,7 @@ def kill(entity: Entity) -> float:
             target.object.die()
 
 
-input_neuron_definitions: List[Neuron] = [
+input_neuron_definitions: list[Neuron] = [
     Neuron('I_location_vertically', NeuronType.INPUT, input_func=get_location_vertically),
     Neuron('I_location_horizontally', NeuronType.INPUT, input_func=get_location_horizontally),
     Neuron('I_distance_to_north_border', NeuronType.INPUT, input_func=get_distance_north),
@@ -177,7 +176,7 @@ input_neuron_definitions: List[Neuron] = [
 ]
 
 
-output_neuron_definitions: List[Neuron] = [
+output_neuron_definitions: list[Neuron] = [
     Neuron('O_move_forward', NeuronType.OUTPUT, output_func=move_forward),
     Neuron('O_reverse', NeuronType.OUTPUT, output_func=reverse),
     Neuron('O_move_random', NeuronType.OUTPUT, output_func=move_random),

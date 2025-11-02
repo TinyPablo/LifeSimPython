@@ -3,7 +3,6 @@ import json
 import math
 import threading
 import time
-from typing import Dict, List
 
 import numpy as np
 
@@ -28,10 +27,10 @@ class Simulation:
         self.grid: 'Grid' = Grid(self.settings.grid_width, self.settings.grid_height, self)
         self.current_generation: int = 0
         self.current_step: int = 0
-        self.entities: List[Entity] = []
+        self.entities: list[Entity] = []
         self.simulation_ended: bool = False
         self.survival_rate: float = 0.0
-        self.generation_data: Dict[str, int | str] = {}
+        self.generation_data: dict[str, int | str] = {}
         self.generation_start_time: float = 0.0
         self.cached_inputs: dict[str, float] = {}
         self._selection_mask: np.ndarray | None = None
@@ -67,7 +66,7 @@ class Simulation:
         self.simulation_loop()
         
     def populate(self) -> None:
-        self.entities: List[Entity] = []
+        self.entities: list[Entity] = []
         for _ in range(self.settings.max_entity_count):
             genome: Genome = Genome(self.settings.brain_size)
             entity: Entity = Entity(genome, self)
@@ -94,7 +93,7 @@ class Simulation:
         for entity in self.entities:
             entity.brain.init()
 
-        pictures: List[List[List[tuple[int, int, int]]]] = []
+        pictures: list[list[list[tuple[int, int, int]]]] = []
         while self.settings.steps_per_generation >= self.current_step and not self.simulation_ended:
             self.update_cached_inputs()
             
@@ -107,7 +106,7 @@ class Simulation:
 
         self.on_generation_end(pictures)
                 
-    def on_generation_end(self, pictures: List[List[tuple[int, int, int]]]) -> None:
+    def on_generation_end(self, pictures: list[list[tuple[int, int, int]]]) -> None:
         self.update_simulation_data()
         self.do_natural_selection()  
 
@@ -156,10 +155,10 @@ class Simulation:
         print(log_message, flush=True)
 
     def reproduce(self) -> None:
-        parents: List[Entity] = copy.copy(self.entities)
-        used_parents: List[Entity] = []
+        parents: list[Entity] = copy.copy(self.entities)
+        used_parents: list[Entity] = []
 
-        new_entities: List[Entity] = []
+        new_entities: list[Entity] = []
 
         if len(parents) < 2:
             print(f"[LOG] Population went extinct after {self.current_generation} generations")
@@ -197,9 +196,9 @@ class Simulation:
         for entity in self.entities:
             self.grid.deploy_entity_randomly(entity)
 
-    def write_simulation_data(self, generation_data: Dict) -> None:
+    def write_simulation_data(self, generation_data: dict) -> None:
         simulation_data_path = f"{self.settings.simulation_directory}/simulation_data.json"
-        all_data: List[Dict] = self.load_simulation_data()
+        all_data: list[dict] = self.load_simulation_data()
 
         with open(simulation_data_path, 'w') as f:
             all_data.append(generation_data)
@@ -213,7 +212,7 @@ class Simulation:
     def update_survival_rate(self, alive_entities_count: int) -> None:
         self.survival_rate = alive_entities_count / self.settings.max_entity_count * 100
 
-    def load_simulation_data(self) -> List:
+    def load_simulation_data(self) -> list:
         simulation_data_path = f"{self.settings.simulation_directory}/simulation_data.json"
         try:
             with open(simulation_data_path, 'r') as f:

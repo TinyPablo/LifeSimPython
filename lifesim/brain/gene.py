@@ -1,11 +1,10 @@
-from typing import Optional
 from lifesim.brain.connection import ConnectionTipType, ConnectionEndType
 from lifesim.utils.rng import rng
 
 
 class Gene:
-    def __init__(self, gene: Optional[int] = None) -> None:
-        self._gene: Optional[int] = None
+    def __init__(self, gene:  int | None = None) -> None:
+        self._gene:  int | None = None
         if gene is None:
             self.randomize()
         else:

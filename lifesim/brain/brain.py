@@ -1,4 +1,4 @@
-from typing import List, Callable
+from collections.abc import Callable
 from lifesim.brain.connection import ConnectionEndType, ConnectionTipType
 from lifesim.brain.gene import Gene
 from lifesim.brain.genome import Genome
@@ -23,25 +23,25 @@ class Brain:
         return self.__str__()
 
     @property
-    def input_neurons(self) -> List[Neuron]:
+    def input_neurons(self) -> list[Neuron]:
         return [n for n in self.neurons if n.type == NeuronType.INPUT]
     
     @property
-    def output_neurons(self) -> List[Neuron]:
+    def output_neurons(self) -> list[Neuron]:
         return [n for n in self.neurons if n.type == NeuronType.OUTPUT]
     
     @property
-    def internal_neurons(self) -> List[Neuron]:
+    def internal_neurons(self) -> list[Neuron]:
         return [n for n in self.neurons if n.type == NeuronType.INTERNAL]
     
     def connect_neurons(self) -> None:
         self.brain_str: str = ''
-        genes: List[Gene] = self.genome.genes
+        genes: list[Gene] = self.genome.genes
         # print(genes)
 
         for gene in genes:
-            input_neuron_list: List[Neuron] = list()
-            output_neuron_list: List[Neuron] = list()
+            input_neuron_list: list[Neuron] = list()
+            output_neuron_list: list[Neuron] = list()
 
             if gene.conn_tip_neuron_type == ConnectionTipType.INPUT or not self.internal_neurons:
                 input_neuron_list = self.input_neurons

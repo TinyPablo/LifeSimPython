@@ -1,4 +1,3 @@
-from typing import Dict, List
 import matplotlib.pyplot as plt
 import json
 import os
@@ -12,15 +11,15 @@ paths = [
 
 def load_data(path: str):
     with open(os.path.join(path, 'settings.json'), 'r') as f:
-        simulation_settings: Dict = json.load(f)
+        simulation_settings: dict = json.load(f)
 
     with open(os.path.join(path, 'simulation_data.json'), 'r') as f:
-        simulation_data: List[Dict] = json.load(f)
+        simulation_data: list[dict] = json.load(f)
 
     return simulation_settings, simulation_data
 
 
-def smooth(data: List[float], window_size: int = 20) -> List[float]:
+def smooth(data: list[float], window_size: int = 20) -> list[float]:
     if len(data) < window_size:
         return data
     kernel = np.ones(window_size) / window_size

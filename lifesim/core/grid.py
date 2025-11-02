@@ -1,6 +1,6 @@
 import os
 import threading
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 import cv2
 import numpy as np
 
@@ -21,7 +21,7 @@ class Grid:
         self.width: int = width
         self.height: int = height
         self.simulation: 'Simulation' = simulation
-        self.grid: List[List[Cell]] = [[Cell() for _ in range(self.height)] for _ in range(self.width)]
+        self.grid: list[list[Cell]] = [[Cell() for _ in range(self.height)] for _ in range(self.width)]
 
     def __str__(self) -> str:
         grid_str = '\n'.join(
@@ -91,7 +91,7 @@ class Grid:
 
         return picture
 
-    def save_video(self, pictures: List[List[tuple[int, int, int]]], generation: int, survival_rate: float) -> None:
+    def save_video(self, pictures: list[list[tuple[int, int, int]]], generation: int, survival_rate: float) -> None:
         def save() -> None:
             path: str = f"{self.simulation.settings.simulation_directory}/videos"
             os.makedirs(path, exist_ok=True)

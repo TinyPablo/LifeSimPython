@@ -1,11 +1,10 @@
-from typing import List, Optional
 from lifesim.brain.gene import Gene
 from lifesim.utils.rng import rng
 
 class Genome:
-    def __init__(self, size: Optional[int] = None, genes: Optional[list[Gene]] = None) -> None:
-        self.genes: List[Gene] = None
-        self.size: Optional[int] = size
+    def __init__(self, size: int | None = None, genes: list[Gene] | None = None) -> None:
+        self.genes: list[Gene] = None
+        self.size: int | None = size
         if genes is None:
             self.randomize()
         else:
