@@ -23,7 +23,7 @@ def main() -> None:
 
             "steps_per_generation": 100,
             "max_generations": 10_000_000,
-            "selection_condition": SelectionCondition.CENTER_ZONE.value,
+            "selection_condition": SelectionCondition.ALMOST_P.value,
 
             "max_entity_count": 500,
             "brain_size": 4,

@@ -5,6 +5,8 @@ import threading
 import time
 from typing import Dict, List
 
+import numpy as np
+
 from lifesim.brain.genome import Genome
 from lifesim.core.grid import Grid
 from lifesim.core.entity import Entity
@@ -32,6 +34,7 @@ class Simulation:
         self.generation_data: Dict[str, int | str] = {}
         self.generation_start_time: float = 0.0
         self.cached_inputs: dict[str, float] = {}
+        self._selection_mask: np.ndarray | None = None
         
         if getattr(self.settings, "selection_condition", None):
             try:
@@ -201,18 +204,11 @@ class Simulation:
         with open(simulation_data_path, 'w') as f:
             all_data.append(generation_data)
             json.dump(all_data, f)
-
+    
     def selection_condition(self, x: int, y: int) -> bool:
-        w: int = self.settings.grid_width
-        h: int = self.settings.grid_height
-
-        if not self._selection_condition_callable:
-            raise RuntimeError(f"selection condition not loaded for simulation '{self.settings.name}'")
-
-        try:
-            return bool(self._selection_condition_callable(x, y, w, h))
-        except Exception as e:
-            raise RuntimeError(f"selection_condition error: {e}")
+        if self._selection_mask is None:
+            self.build_selection_mask()
+        return bool(self._selection_mask[y, x])
 
     def update_survival_rate(self, alive_entities_count: int) -> None:
         self.survival_rate = alive_entities_count / self.settings.max_entity_count * 100
@@ -233,4 +229,14 @@ class Simulation:
         self.cached_inputs['age'] = self.current_step / self.settings.steps_per_generation
         self.cached_inputs['oscillator'] = 0.5 * (
             math.sin(2 * math.pi / self.settings.steps_per_generation * self.current_step) + 1
+        )
+        
+    def build_selection_mask(self) -> None:
+        w, h = self.settings.grid_width, self.settings.grid_height
+        cond = self._selection_condition_callable
+        
+        self._selection_mask = np.fromfunction(
+            np.vectorize(lambda y, x: bool(cond(int(x), int(y), w, h))),
+            (h, w),
+            dtype=int
         )

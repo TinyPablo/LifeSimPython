@@ -74,25 +74,21 @@ class Grid:
         cell = self.grid[x][y]
         if cell.is_entity:
             self.grid[x][y].reset()
+    
+    def get_picture(self) -> np.ndarray:
+        sim = self.simulation
+        w, h = sim.settings.grid_width, sim.settings.grid_height
 
-    def get_picture(self) -> List[List[tuple[int, int, int]]]:
-        picture = []
-        width = len(self.grid[0])
-        height = len(self.grid)
+        picture = np.full((h, w, 3), 255, dtype=np.uint8)
 
-        for y in range(height):
-            picture_row = []
-            for x in range(width):
-                cell = self.grid[x][y]
-                if cell.is_entity:
-                    color = cell.object.color
-                else:
-                    if self.simulation.selection_condition(x, y):
-                        color = (144, 238, 144)
-                    else:
-                        color = (255, 255, 255)
-                picture_row.append(color)
-            picture.append(picture_row)
+        mask = sim._selection_mask
+        if mask is not None:
+            picture[mask] = (144, 238, 144)
+
+        for entity in sim.entities:
+            x, y = entity.transform.position_x, entity.transform.position_y
+            picture[y, x] = entity.color
+
         return picture
 
     def save_video(self, pictures: List[List[tuple[int, int, int]]], generation: int, survival_rate: float) -> None:
