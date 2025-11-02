@@ -190,15 +190,13 @@ output_neuron_definitions: List[Neuron] = [
     # Neuron('kill', NeuronType.OUTPUT, output_func=kill),
 ]
 
+def get_fresh_neurons(settings: SimulationSettings) -> list[Neuron]:
+    internal_count = settings.max_internal_neurons
+    internal_neurons = [Neuron(f'internal_{i+1}', NeuronType.INTERNAL) for i in range(internal_count)]
 
-def get_fresh_neurons(settings: SimulationSettings) -> List[Neuron]:
-    internal_neuron_definitions: List[Neuron] = [
-        Neuron(f'internal_{i+1}', NeuronType.INTERNAL)
-        for i in range(settings.max_internal_neurons)
-        ]
-    neuron_definitions: List[Neuron] = [
-        *input_neuron_definitions,
-        *output_neuron_definitions,
-        *internal_neuron_definitions
-        ]
-    return deepcopy(neuron_definitions)
+    neurons = (
+        [Neuron(n.name, n.type, input_func=n.input_func, output_func=n.output_func)
+         for n in input_neuron_definitions + output_neuron_definitions] +
+        internal_neurons
+    )
+    return neurons
