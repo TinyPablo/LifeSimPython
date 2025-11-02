@@ -27,10 +27,10 @@ class Gene:
         return self.gene
 
     def __str__(self) -> str:
-        conn_tip_type_int: int = (self.gene >> 31) & 1
+        conn_tip_type_int = (self.gene >> 31) & 1
         conn_tip_neuron_id: int = (self.gene >> 24) & 0b111_1111 
         conn_end_type_int: int = (self.gene >> 23) & 1
-        conn_tip_neuron_id: int = (self.gene >> 16) & 0b111_1111 
+        conn_end_neuron_id: int = (self.gene >> 16) & 0b111_1111 
         conn_weight_raw_int: int = self.gene & 0xFFFF
 
         return (

@@ -35,7 +35,7 @@ class Brain:
         return [n for n in self.neurons if n.type == NeuronType.INTERNAL]
     
     def connect_neurons(self) -> None:
-        self.brain_str: str = ''
+        self.brain_str = ''
         genes: list[Gene] = self.genome.genes
         # print(genes)
 

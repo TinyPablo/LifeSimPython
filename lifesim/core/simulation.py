@@ -18,7 +18,7 @@ class Simulation:
     _id_counter_lock = threading.Lock()
     _id_counter = 1
     
-    def __init__(self, settings: dict = None) -> None:
+    def __init__(self, settings: dict | None = None) -> None:
         with Simulation._id_counter_lock:
             self.id = Simulation._id_counter
             Simulation._id_counter += 1
@@ -93,7 +93,7 @@ class Simulation:
         for entity in self.entities:
             entity.brain.init()
 
-        pictures: list[list[list[tuple[int, int, int]]]] = []
+        pictures: list = []
         while self.settings.steps_per_generation >= self.current_step and not self.simulation_ended:
             self.update_cached_inputs()
             
@@ -106,7 +106,7 @@ class Simulation:
 
         self.on_generation_end(pictures)
                 
-    def on_generation_end(self, pictures: list[list[tuple[int, int, int]]]) -> None:
+    def on_generation_end(self, pictures: list[np.ndarray]) -> None:
         self.update_simulation_data()
         self.do_natural_selection()  
 
@@ -134,7 +134,7 @@ class Simulation:
         self.entities = alive_entities
         self.update_survival_rate(len(self.entities))
 
-    def log_generation_summary(self, elapsed_time: float, safe_entities_count: int = None) -> None:
+    def log_generation_summary(self, elapsed_time: float, safe_entities_count: int | None = None) -> None:
         generation_num = self.current_generation
         if safe_entities_count is None:
             safe_entities_count = sum(

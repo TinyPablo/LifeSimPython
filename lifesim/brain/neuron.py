@@ -16,7 +16,7 @@ class Neuron:
         
         if self.type == NeuronType.OUTPUT and output_func is None:
             raise TypeError('OUTPUT NEURON requires output function')
-        self.output_func: Callable | None = output_func
+        self.output_func: Callable = output_func
 
         self.input_neurons: list['Neuron'] = []
         self.output_neurons: list['Neuron'] = []
@@ -30,8 +30,8 @@ class Neuron:
         self.disabled = True
 
     def __str__(self) -> str:
-        input_names: list[str] = ', '.join([neuron.name for neuron in self.input_neurons])
-        output_names: list[str] = ', '.join([neuron.name for neuron in self.output_neurons])
+        input_names: str = ', '.join([neuron.name for neuron in self.input_neurons])
+        output_names: str = ', '.join([neuron.name for neuron in self.output_neurons])
 
         input_names = 'NONE' if input_names == '' else input_names
         output_names = 'NONE' if output_names == '' else output_names

@@ -92,60 +92,60 @@ def get_entities_alive(entity: Entity) -> float:
 
 # ======= OUTPUT NEURON FUNCTIONS =======
 
-def move_north(entity: Entity) -> float:
+def move_north(entity: Entity) -> None:
     grid: Grid = entity.grid
     grid.move(entity, Direction.UP)
 
 
-def move_east(entity: Entity) -> float:
+def move_east(entity: Entity) -> None:
     grid: Grid = entity.grid
     grid.move(entity, Direction.RIGHT)
 
 
-def move_south(entity: Entity) -> float:
+def move_south(entity: Entity) -> None:
     grid: Grid = entity.grid
     grid.move(entity, Direction.DOWN)
 
 
-def move_west(entity: Entity) -> float:
+def move_west(entity: Entity) -> None:
     grid: Grid = entity.grid
     grid.move(entity, Direction.LEFT)
 
 
-def move_forward(entity: Entity) -> float:
+def move_forward(entity: Entity) -> None:
     grid: Grid = entity.grid
     grid.move_relative(entity, Direction.UP)
 
 
-def reverse(entity: Entity) -> float:
+def reverse(entity: Entity) -> None:
     grid: Grid = entity.grid
     grid.move_relative(entity, Direction.DOWN)
 
 
-def move_right(entity: Entity) -> float:
+def move_right(entity: Entity) -> None:
     grid: Grid = entity.grid
     grid.move_relative(entity, Direction.RIGHT)
 
 
-def move_left(entity: Entity) -> float:
+def move_left(entity: Entity) -> None:
     grid: Grid = entity.grid
     grid.move_relative(entity, Direction.LEFT)
 
 
-def move_random(entity: Entity) -> float:
+def move_random(entity: Entity) -> None:
     grid: Grid = entity.grid
     grid.move(entity, Direction.random())
 
 
-def stay_still(entity: Entity) -> float:
+def stay_still(entity: Entity) -> None:
     pass
 
 
-def kys(entity: Entity) -> float:
+def kys(entity: Entity) -> None:
     entity.die()
 
 
-def kill(entity: Entity) -> float:
+def kill(entity: Entity) -> None:
     grid: Grid = entity.grid
     x: int = entity.transform.next_x
     y: int = entity.transform.next_y

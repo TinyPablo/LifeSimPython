@@ -91,7 +91,7 @@ class Grid:
 
         return picture
 
-    def save_video(self, pictures: list[list[tuple[int, int, int]]], generation: int, survival_rate: float) -> None:
+    def save_video(self, pictures: list[np.ndarray], generation: int, survival_rate: float) -> None:
         def save() -> None:
             path: str = f"{self.simulation.settings.simulation_directory}/videos"
             os.makedirs(path, exist_ok=True)
