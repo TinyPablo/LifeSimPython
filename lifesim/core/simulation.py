@@ -77,7 +77,7 @@ class Simulation:
         self.current_generation = 1
     
         while not self.simulation_ended and self.current_generation < (self.settings.max_generations + 1):
-            if self.current_generation == 6:
+            if self.current_generation == 26:
                 break
             self.generation_loop()
             self.current_generation += 1

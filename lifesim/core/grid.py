@@ -7,6 +7,8 @@ import numpy as np
 from lifesim.core.cell import Cell
 from lifesim.utils.direction import Direction
 from lifesim.utils.rng import rng
+from lifesim.utils.direction_map import ABSOLUTE_DIRECTION_MAPPING
+
 
 
 if TYPE_CHECKING:
@@ -140,20 +142,7 @@ class Grid:
         x: int = entity.transform.position_x + direction.value[0]
         y: int = entity.transform.position_y + direction.value[1]
         return not self.in_boundaries(x, y) or self.grid[x][y].is_occupied
-    
-    @staticmethod 
-    def get_absolute_direction(facing: Direction, relative: Direction) -> Direction:
-        directions = [
-            Direction.UP,
-            Direction.UP_RIGHT,
-            Direction.RIGHT,
-            Direction.DOWN_RIGHT,
-            Direction.DOWN,
-            Direction.DOWN_LEFT,
-            Direction.LEFT,
-            Direction.UP_LEFT,
-        ]
-        i_facing = directions.index(facing)
-        i_relative = directions.index(relative)
-        i_absolute = (i_facing + i_relative) % len(directions)
-        return directions[i_absolute]
+
+    @staticmethod
+    def get_absolute_direction(facing_direction: Direction, relative_direction: Direction) -> Direction:
+        return ABSOLUTE_DIRECTION_MAPPING[(facing_direction, relative_direction)]

@@ -5,7 +5,6 @@ import pstats
 
 from lifesim.evolution.selection_conditions.enum import SelectionCondition
 from lifesim.core.simulation import Simulation
-from lifesim.utils.rng import RNG
 from lifesim.utils.utils import timeit
 
 
@@ -24,7 +23,7 @@ def main() -> None:
 
             "steps_per_generation": 100,
             "max_generations": 10_000_000,
-            "selection_condition": SelectionCondition.CORNERS.value,
+            "selection_condition": SelectionCondition.CENTER_ZONE.value,
 
             "max_entity_count": 500,
             "brain_size": 4,
@@ -33,7 +32,7 @@ def main() -> None:
 
             "gene_mutation_probability": 1 / 10_000,
 
-            "video_framerate": 60,
+            "video_framerate": 40,
             "video_upscale_factor": 8
         }
         for i in range(1)
@@ -63,7 +62,4 @@ if __name__ == '__main__':
     if measure:
         profiler.disable()
         stats = pstats.Stats(profiler)
-        stats.sort_stats('cumtime').print_stats(60) 
-
-        
-        stats.dump_stats("profile_results.prof")
+        stats.sort_stats('cumtime').print_stats(60)
