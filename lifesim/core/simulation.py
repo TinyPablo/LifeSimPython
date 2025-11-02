@@ -47,6 +47,8 @@ class Simulation:
         
         self._selection_condition_callable = mod.condition
         self.primary_survival_rate: float = self.get_primary_survival_rate()
+        self.tracked_entity = None
+        self.tracked_positions = set()
     
     def get_primary_survival_rate(self):
         total_squares = self.settings.grid_width * self.settings.grid_height
@@ -77,20 +79,23 @@ class Simulation:
         self.current_generation = 1
     
         while not self.simulation_ended and self.current_generation < (self.settings.max_generations + 1):
-            if self.current_generation == 6:
-                break
+            # if self.current_generation == 61:
+            #     break
             self.generation_loop()
             self.current_generation += 1
 
         print(f'[LOG] simulation ended')
 
     def generation_loop(self) -> None:
+        
+        self.tracked_entity = self.entities[0]
         self.generation_start_time = time.perf_counter()
         self.current_step = 1
-
+        self.tracked_positions.clear()
+        
         for entity in self.entities:
             entity.brain.init()
-
+                   
         pictures: List[List[List[tuple[int, int, int]]]] = []
         while self.settings.steps_per_generation >= self.current_step and not self.simulation_ended:
             self.update_cached_inputs()
@@ -98,7 +103,12 @@ class Simulation:
             for entity in self.entities:
                 entity.brain.process()   
 
-            
+            position = (
+                self.tracked_entity.transform.position_x,
+                self.tracked_entity.transform.position_y
+            )
+            self.tracked_positions.add(position)
+
             pictures.append(self.grid.get_picture())
             self.current_step += 1
 

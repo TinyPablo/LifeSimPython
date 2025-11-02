@@ -24,16 +24,16 @@ def main() -> None:
 
             "steps_per_generation": 100,
             "max_generations": 10_000_000,
-            "selection_condition": SelectionCondition.CORNERS.value,
+            "selection_condition": SelectionCondition.CENTER_ZONE.value,
 
             "max_entity_count": 500,
-            "brain_size": 4,
+            "brain_size": 6,
             "max_internal_neurons": 0,
             "fresh_minds": 4,
 
             "gene_mutation_probability": 1 / 10_000,
 
-            "video_framerate": 60,
+            "video_framerate": 40,
             "video_upscale_factor": 8
         }
         for i in range(1)
