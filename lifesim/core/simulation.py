@@ -148,13 +148,14 @@ class Simulation:
                 if self.selection_condition(e.transform.position_x, e.transform.position_y)
             )
         safe_entities_percent = safe_entities_count / self.settings.max_entity_count * 100
+        generations_per_minute: float = 60 / elapsed_time
 
         log_message = (
             f"[LOG] Simulation: {self.settings.name}\n"
             f"[LOG] Generation: {generation_num}\n"
             f"[LOG] Safe Entities: {safe_entities_count}/{self.settings.max_entity_count} "
             f"SR {safe_entities_percent:.2f}% / PRS {self.primary_survival_rate:.2f}%\n"
-            f"[LOG] Generation Duration: {elapsed_time:.3f} seconds\n"
+            f"[LOG] Generations per minute: {generations_per_minute:.1f}\n"
             f"{'-'*50}\n"
         )
 
