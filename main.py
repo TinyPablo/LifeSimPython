@@ -22,7 +22,7 @@ def main() -> None:
             "grid_height": 80,
 
             "steps_per_generation": 100,
-            "max_generations": 10_000_000,
+            "max_generations": 25,
             "selection_condition": SelectionCondition.ALMOST_P.value,
 
             "max_entity_count": 500,
