@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enum import Enum
 
 from lifesim.utils.rng import rng
@@ -14,5 +15,5 @@ class Direction(Enum):
     DOWN_RIGHT = (1, 1)
 
     @staticmethod
-    def random() -> 'Direction':
+    def random() -> Direction:
         return rng.random.choice(list(Direction))

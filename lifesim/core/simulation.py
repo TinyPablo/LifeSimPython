@@ -24,7 +24,7 @@ class Simulation:
             Simulation._id_counter += 1
             
         self.settings = SimulationSettings(self.id, settings)
-        self.grid: 'Grid' = Grid(self.settings.grid_width, self.settings.grid_height, self)
+        self.grid: Grid = Grid(self.settings.grid_width, self.settings.grid_height, self)
         self.current_generation: int = 0
         self.current_step: int = 0
         self.entities: list[Entity] = []

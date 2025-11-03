@@ -1,3 +1,4 @@
+from __future__ import annotations
 import os
 import threading
 from typing import TYPE_CHECKING
@@ -17,10 +18,10 @@ if TYPE_CHECKING:
 
 
 class Grid:
-    def __init__(self, width: int, height: int, simulation: 'Simulation') -> None:
+    def __init__(self, width: int, height: int, simulation: Simulation) -> None:
         self.width: int = width
         self.height: int = height
-        self.simulation: 'Simulation' = simulation
+        self.simulation: Simulation = simulation
         self.grid: list[list[Cell]] = [[Cell() for _ in range(self.height)] for _ in range(self.width)]
 
     def __str__(self) -> str:
@@ -33,7 +34,7 @@ class Grid:
     def __repr__(self) -> str:
         return self.__str__()
 
-    def deploy_entity_randomly(self, entity: 'Entity') -> None:
+    def deploy_entity_randomly(self, entity: Entity) -> None:
         attempted_positions = set()
         attempts = 0
         max_attempts = self.width * self.height
@@ -56,7 +57,7 @@ class Grid:
 
         raise Exception('All cells are taken')
     
-    def try_set_position(self, object: 'Entity', x: int, y: int) -> bool:
+    def try_set_position(self, object: Entity, x: int, y: int) -> bool:
         if not self.in_boundaries(x, y):
             return False
         
@@ -66,7 +67,7 @@ class Grid:
         self.place_object(object, x, y)
         return True
 
-    def place_object(self, object: 'Entity', x: int, y: int) -> None:
+    def place_object(self, object: Entity, x: int, y: int) -> None:
         self.grid[x][y].set_object(object)
         object.set_position(x, y)
 
@@ -114,7 +115,7 @@ class Grid:
         
         threading.Thread(target=save).start()
 
-    def move(self, entity: 'Entity', direction: Direction) -> None:
+    def move(self, entity: Entity, direction: Direction) -> None:
         x: int = entity.transform.position_x
         y: int = entity.transform.position_y
         
@@ -126,7 +127,7 @@ class Grid:
             entity.set_position(new_x, new_y)
             entity.transform.direction = direction
             
-    def move_relative(self, entity: 'Entity', relative_direction: Direction) -> None:
+    def move_relative(self, entity: Entity, relative_direction: Direction) -> None:
         facing_direction = entity.transform.direction
         absolute_direction = self.get_absolute_direction(facing_direction, relative_direction)
         self.move(entity, absolute_direction)
@@ -134,7 +135,7 @@ class Grid:
     def in_boundaries(self, x: int, y: int) -> bool:
         return 0 <= x < self.width and 0 <= y < self.height
 
-    def blockage_in_direction(self, entity: 'Entity', direction: Direction) -> bool:
+    def blockage_in_direction(self, entity: Entity, direction: Direction) -> bool:
         x: int = entity.transform.position_x + direction.value[0]
         y: int = entity.transform.position_y + direction.value[1]
         return not self.in_boundaries(x, y) or self.grid[x][y].is_occupied

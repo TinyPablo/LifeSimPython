@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from lifesim.brain.gene import Gene
 from lifesim.utils.rng import rng
 
@@ -25,7 +27,7 @@ class Genome:
         return iter(self.genes)
 
     @staticmethod
-    def crossover(genome_a: 'Genome', genome_b: 'Genome', mutation_probability: float) -> 'Genome':
+    def crossover(genome_a: Genome, genome_b: Genome, mutation_probability: float) -> Genome:
         assert genome_a.genes is not None and genome_b.genes is not None  # for mypy
 
         len_a = len(genome_a.genes)

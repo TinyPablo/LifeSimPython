@@ -1,3 +1,4 @@
+from __future__ import annotations
 from collections.abc import Callable
 from math import tanh
 
@@ -19,10 +20,10 @@ class Neuron:
 
         self.output_func: Callable | None = output_func
     
-        self.input_neurons: list['Neuron'] = []
-        self.output_neurons: list['Neuron'] = []
+        self.input_neurons: list[Neuron] = []
+        self.output_neurons: list[Neuron] = []
 
-        self.weights: dict['Neuron', float] = {}
+        self.weights: dict[Neuron, float] = {}
 
         self.output: float | None = None 
         self.disabled: bool = False
@@ -65,7 +66,7 @@ class Neuron:
             self.output = neuron_output
     
     @staticmethod
-    def connect_neurons(tip_neuron: 'Neuron', end_neuron: 'Neuron', connection_weight: float) -> None:
+    def connect_neurons(tip_neuron: Neuron, end_neuron: Neuron, connection_weight: float) -> None:
         if tip_neuron.type == NeuronType.OUTPUT:
             raise ValueError("TIP neuron cannot be OUTPUT NEURON")
         
@@ -92,8 +93,8 @@ class Neuron:
         tip_neuron.weights[end_neuron] = connection_weight 
 
     @staticmethod
-    def detect_cycle(start: 'Neuron') -> bool:
-        def visit(neuron: 'Neuron', visited: set['Neuron'], rec_stack: set['Neuron']) -> bool:
+    def detect_cycle(start: Neuron) -> bool:
+        def visit(neuron: Neuron, visited: set[Neuron], rec_stack: set[Neuron]) -> bool:
             if neuron not in visited:
                 visited.add(neuron)
                 rec_stack.add(neuron)
@@ -112,11 +113,11 @@ class Neuron:
         return visit(start, visited, rec_stack)
 
     @staticmethod
-    def sort(neurons: list['Neuron']):
+    def sort(neurons: list[Neuron]):
         input_counts = {neuron: len(neuron.input_neurons) for neuron in neurons}
 
-        sorted_neurons: list['Neuron'] = []
-        no_incoming: list['Neuron'] = [n for n in neurons if input_counts[n] == 0]
+        sorted_neurons: list[Neuron] = []
+        no_incoming: list[Neuron] = [n for n in neurons if input_counts[n] == 0]
 
         while no_incoming:
             n: Neuron = no_incoming.pop()
@@ -136,7 +137,7 @@ class Neuron:
         return neurons
     
     @staticmethod
-    def filter(neurons: list['Neuron']) -> None:
+    def filter(neurons: list[Neuron]) -> None:
         for neuron in neurons:
 
             if neuron.type == NeuronType.INPUT:

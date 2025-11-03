@@ -9,9 +9,9 @@ from lifesim.brain.neurons import get_fresh_neurons
 
 
 class Brain:
-    def __init__(self, genome: Genome, entity: 'Entity') -> None:
+    def __init__(self, genome: Genome, entity: Entity) -> None:
         self.genome: Genome = genome
-        self.entity: 'Entity' = entity
+        self.entity: Entity = entity
         
         self.neurons: list[Neuron] = []
         self.brain_str: str = ''
