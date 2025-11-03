@@ -52,7 +52,7 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    measure = True
+    measure = False
     if measure:
         profiler = cProfile.Profile()
         profiler.enable()
