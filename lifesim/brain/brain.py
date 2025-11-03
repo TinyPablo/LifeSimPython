@@ -82,7 +82,7 @@ class Brain:
         self.neurons = get_fresh_neurons(self.entity.simulation.settings)
         self.connect_neurons()
         Neuron.sort(self.neurons)
-        Neuron.filter(self.neurons)
+        Neuron.filter_and_prune(self.neurons)
 
     def process(self) -> None:
         def _noop(): 
@@ -92,8 +92,6 @@ class Brain:
         final_action_chance: float = float('-inf')
         
         for n in self.neurons:
-            if n.disabled:
-                continue
 
             if n.type == NeuronType.INPUT:
                 n.execute_as_input_neuron(self.entity)

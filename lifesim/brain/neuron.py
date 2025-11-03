@@ -138,27 +138,20 @@ class Neuron:
         sorted_map = {neuron.name: index for index, neuron in enumerate(sorted_neurons)}
         neurons.sort(key=lambda neuron: sorted_map.get(neuron.name, float('inf')))
 
-        return neurons
-    
     @staticmethod
-    def filter(neurons: list[Neuron]) -> None:
-        for neuron in neurons:
-
-            if neuron.type == NeuronType.INPUT:
-                if not neuron.output_neurons:
-                    neuron.disable()
+    def filter_and_prune(neurons: list['Neuron']) -> None:
+        pruned = []
+        for n in neurons:
+            if n.type == NeuronType.INPUT:
+                if not n.output_neurons:
                     continue
-
-            if neuron.type == NeuronType.OUTPUT:
-                if not neuron.input_neurons:
-                    neuron.disable()
+            elif n.type == NeuronType.OUTPUT:
+                if not n.input_neurons:
                     continue
-
-            if neuron.type == NeuronType.INTERNAL:
-                if not neuron.output_neurons:
-                    neuron.disable()
+            elif n.type == NeuronType.INTERNAL:
+                if not n.output_neurons:
                     continue
-
-            if not (neuron.input_neurons or neuron.output_neurons):
-                neuron.disable()
+            if not (n.input_neurons or n.output_neurons):
                 continue
+            pruned.append(n)
+        neurons[:] = pruned
