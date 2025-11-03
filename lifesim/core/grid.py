@@ -1,21 +1,20 @@
 from __future__ import annotations
+
 import os
 import threading
 from typing import TYPE_CHECKING
+
 import cv2
 import numpy as np
 
 from lifesim.core.cell import Cell
+from lifesim.core.entity import Entity
 from lifesim.utils.direction import Direction
-from lifesim.utils.rng import rng
 from lifesim.utils.direction_map import ABSOLUTE_DIRECTION_MAPPING
-
-
+from lifesim.utils.rng import rng
 
 if TYPE_CHECKING:
-    from lifesim.core.entity import Entity
-    from lifesim.core.simulation import Simulation
-
+    from lifesim.core.simulation import Simulation  
 
 class Grid:
     def __init__(self, width: int, height: int, simulation: Simulation) -> None:

@@ -1,4 +1,4 @@
-from lifesim.brain.connection import ConnectionTipType, ConnectionEndType
+from lifesim.brain.connection import ConnectionEndType, ConnectionTipType
 from lifesim.utils.rng import rng
 
 
@@ -27,18 +27,14 @@ class Gene:
         return self.gene
 
     def __str__(self) -> str:
-        conn_tip_type_int = (self.gene >> 31) & 1
-        conn_tip_neuron_id: int = (self.gene >> 24) & 0b111_1111 
-        conn_end_type_int: int = (self.gene >> 23) & 1
-        conn_end_neuron_id: int = (self.gene >> 16) & 0b111_1111 
-        conn_weight_raw_int: int = self.gene & 0xFFFF
+        # conn_tip_type_int = (self.gene >> 31) & 1
+        # conn_tip_neuron_id: int = (self.gene >> 24) & 0b111_1111 
+        # conn_end_type_int: int = (self.gene >> 23) & 1
+        # conn_end_neuron_id: int = (self.gene >> 16) & 0b111_1111 
+        # conn_weight_raw_int: int = self.gene & 0xFFFF
 
         return (
             f'GENE {self.gene} {bin(self.gene)[2:].rjust(16, "0")}\n'
-            # f'{(} {self.conn_tip_neuron_type.name}\n'
-            # f'{(self.gene >> 24) & 0b111_1111}\n'
-            # f'{(self.gene >> 23) & 1} {self.conn_end_neuron_type.name}\n'
-            # f'{(self.gene >> 16) & 0b111_1111}\n' #1 101 0110
             f'{self.gene & 0xFFFF} {self.conn_weight}\n')
 
     def __repr__(self) -> str:

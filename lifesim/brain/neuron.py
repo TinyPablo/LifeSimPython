@@ -1,9 +1,13 @@
 from __future__ import annotations
+
 from collections.abc import Callable
 from math import tanh
+from typing import TYPE_CHECKING
 
-from lifesim.core.entity import Entity
 from lifesim.brain.neuron_type import NeuronType
+
+if TYPE_CHECKING:
+    from lifesim.common.typing import Entity
 
 
 class Neuron:

@@ -1,8 +1,9 @@
-import matplotlib.pyplot as plt
 import json
 import os
-from matplotlib.animation import FuncAnimation
+
+import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.animation import FuncAnimation
 
 paths = [
     '/Users/pawel/Documents/Python/LifeSimPython/simulations/sim1 27-10-2025 18:51:14'

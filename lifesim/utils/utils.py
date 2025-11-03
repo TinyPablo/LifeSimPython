@@ -1,8 +1,9 @@
-from functools import wraps
+import importlib
 import time
 from datetime import datetime
+from functools import wraps
 from os import name as os_name
-import importlib
+
 
 def timeit(method):
     @wraps(method)

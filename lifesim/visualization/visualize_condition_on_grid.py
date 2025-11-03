@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw
-from lifesim.evolution.selection_conditions.enum import SelectionCondition
 from utils import load_selection_condition_module
+
+from lifesim.evolution.selection_conditions.enum import SelectionCondition
 
 width, height = 200, 200
 cell_size = 1

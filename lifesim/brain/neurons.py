@@ -1,18 +1,15 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
-from lifesim.utils.direction import Direction
-from lifesim.core.entity import Entity
-from lifesim.core.grid import Grid
 from lifesim.brain.neuron import Neuron
 from lifesim.brain.neuron_type import NeuronType
-from lifesim.core.simulation import Simulation
-from lifesim.core.simulation_settings import SimulationSettings
+from lifesim.utils.direction import Direction
 from lifesim.utils.rng import rng
 
-
 if TYPE_CHECKING:
-    from lifesim.core.entity import Entity
-
+    from lifesim.common.typing import (Entity, Grid, Simulation,
+                                       SimulationSettings)
 
 # ======= INPUT NEURON FUNCTIONS =======
 

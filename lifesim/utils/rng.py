@@ -1,6 +1,7 @@
 import random
-import numpy as np
 import threading
+
+import numpy as np
 
 
 class RNG:

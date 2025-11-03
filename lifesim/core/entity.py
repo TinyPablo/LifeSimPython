@@ -2,19 +2,17 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from lifesim.brain.gene import Gene
-from lifesim.core.transform import Transform
 from lifesim.brain.genome import Genome
-
+from lifesim.core.transform import Transform
 
 if TYPE_CHECKING:
-    from lifesim.core.simulation import Simulation
     from lifesim.core.grid import Grid
+    from lifesim.core.simulation import Simulation
 
 
 class Entity:
     def __init__(self, genome: Genome, simulation: Simulation) -> None:
-        from lifesim.brain.brain import Brain
+        from lifesim.brain.brain import Brain 
         
         self.brain: Brain = Brain(genome, self)
         self.transform: Transform = Transform()

@@ -1,12 +1,16 @@
+from __future__ import annotations
+
 from collections.abc import Callable
+from typing import TYPE_CHECKING
+
 from lifesim.brain.connection import ConnectionEndType, ConnectionTipType
-from lifesim.brain.gene import Gene
 from lifesim.brain.genome import Genome
 from lifesim.brain.neuron import Neuron
 from lifesim.brain.neuron_type import NeuronType
-from lifesim.core.entity import Entity
 from lifesim.brain.neurons import get_fresh_neurons
 
+if TYPE_CHECKING:
+    from lifesim.common.typing import Entity
 
 class Brain:
     def __init__(self, genome: Genome, entity: Entity) -> None:
@@ -66,7 +70,7 @@ class Brain:
                 
                 Neuron.connect_neurons(input_neuron, output_neuron, gene.conn_weight) 
                 # print(f"STATUS: <SUCCESS>")
-            except ValueError as e:
+            except ValueError:
                 pass
                 # print("STATUS <FAILED>")
                 # print(f'Reason: {e}')
@@ -81,7 +85,10 @@ class Brain:
         Neuron.filter(self.neurons)
 
     def process(self) -> None:
-        final_action: Callable = lambda: None
+        def _noop(): 
+            return None
+        
+        final_action: Callable = _noop
         final_action_chance: float = float('-inf')
         
         for n in self.neurons:
@@ -102,5 +109,5 @@ class Brain:
 
         try:
             final_action(self.entity)
-        except Exception as e:
+        except Exception:
             pass

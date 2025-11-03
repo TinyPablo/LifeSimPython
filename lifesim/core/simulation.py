@@ -7,11 +7,11 @@ import time
 import numpy as np
 
 from lifesim.brain.genome import Genome
-from lifesim.core.grid import Grid
 from lifesim.core.entity import Entity
+from lifesim.core.grid import Grid
 from lifesim.core.simulation_settings import SimulationSettings
-from lifesim.utils.utils import load_selection_condition_module
 from lifesim.utils.rng import rng
+from lifesim.utils.utils import load_selection_condition_module
 
 
 class Simulation:
@@ -90,7 +90,7 @@ class Simulation:
             self.generation_loop()
             self.current_generation += 1
 
-        print(f'[LOG] simulation ended')
+        print('[LOG] simulation ended')
 
     def generation_loop(self) -> None:
         self.generation_start_time = time.perf_counter()

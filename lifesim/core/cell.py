@@ -21,7 +21,7 @@ class Cell:
    
     @property
     def is_entity(self) -> bool:
-        return type(self.object) == Entity
+        return isinstance(self.object, Entity)
     
     def __str__(self) -> str:
         return f'C_{self.object.__str__()[0]}'

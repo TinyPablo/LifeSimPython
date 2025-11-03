@@ -1,6 +1,5 @@
 from lifesim.utils.direction import Direction
 
-
 ABSOLUTE_DIRECTION_MAPPING: dict[tuple[Direction, Direction], Direction] = {
     (Direction.UP, Direction.UP): Direction.UP,
     (Direction.UP, Direction.DOWN): Direction.DOWN,
