@@ -18,17 +18,17 @@ def simulation_thread(simulation: Simulation, delay: int) -> None:
 def main() -> None:
     simulation_configs = [
         {
-            "grid_width": 80,
-            "grid_height": 80,
+            "grid_width": 128,
+            "grid_height": 128,
 
-            "steps_per_generation": 100,
-            "max_generations": 25,
+            "steps_per_generation": 196,
+            "max_generations": 10,
             "selection_condition": SelectionCondition.ALMOST_P.value,
 
-            "max_entity_count": 500,
-            "brain_size": 4,
-            "max_internal_neurons": 0,
-            "fresh_minds": 4,
+            "max_entity_count": 1280,
+            "brain_size": 6,
+            "max_internal_neurons": 2,
+            "fresh_minds": 12,
 
             "gene_mutation_probability": 1 / 10_000,
 
@@ -52,7 +52,7 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    measure = False
+    measure = True
     if measure:
         profiler = cProfile.Profile()
         profiler.enable()
