@@ -100,7 +100,7 @@ class Grid:
             original_height, original_width = len(pictures[0]), len(pictures[0][0])
             height, width = original_height * self.simulation.settings.video_upscale_factor, original_width * self.simulation.settings.video_upscale_factor
             
-            fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+            fourcc = cv2.VideoWriter_fourcc(*'MJPG')  # type: ignore[attr-defined]
             video = cv2.VideoWriter(video_path, fourcc, self.simulation.settings.video_framerate, (width, height), isColor=True)
             
             for picture in pictures:

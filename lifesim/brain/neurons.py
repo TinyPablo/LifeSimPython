@@ -49,28 +49,33 @@ def random_float(entity: Entity) -> float:
 
 
 def get_blockage_forward(entity: Entity) -> float:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     blockage_forward: bool = grid.blockage_in_direction(entity, entity.transform.direction)
     return 1.0 if blockage_forward else 0.0
 
 
 def get_blockage_north(entity: Entity) -> float:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     return 1.0 if grid.blockage_in_direction(entity, Direction.UP) else 0.0
 
 
 def get_blockage_east(entity: Entity) -> float:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     return 1.0 if grid.blockage_in_direction(entity, Direction.RIGHT) else 0.0
 
 
 def get_blockage_south(entity: Entity) -> float:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     return 1.0 if grid.blockage_in_direction(entity, Direction.DOWN) else 0.0
 
 
 def get_blockage_west(entity: Entity) -> float:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     return 1.0 if grid.blockage_in_direction(entity, Direction.LEFT) else 0.0
 
 
@@ -93,47 +98,56 @@ def get_entities_alive(entity: Entity) -> float:
 # ======= OUTPUT NEURON FUNCTIONS =======
 
 def move_north(entity: Entity) -> None:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     grid.move(entity, Direction.UP)
 
 
 def move_east(entity: Entity) -> None:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     grid.move(entity, Direction.RIGHT)
 
 
 def move_south(entity: Entity) -> None:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     grid.move(entity, Direction.DOWN)
 
 
 def move_west(entity: Entity) -> None:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     grid.move(entity, Direction.LEFT)
 
 
 def move_forward(entity: Entity) -> None:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     grid.move_relative(entity, Direction.UP)
 
 
 def reverse(entity: Entity) -> None:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     grid.move_relative(entity, Direction.DOWN)
 
 
 def move_right(entity: Entity) -> None:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     grid.move_relative(entity, Direction.RIGHT)
 
 
 def move_left(entity: Entity) -> None:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     grid.move_relative(entity, Direction.LEFT)
 
 
 def move_random(entity: Entity) -> None:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     grid.move(entity, Direction.random())
 
 
@@ -146,15 +160,18 @@ def kys(entity: Entity) -> None:
 
 
 def kill(entity: Entity) -> None:
-    grid: Grid = entity.grid
-    x: int = entity.transform.next_x
-    y: int = entity.transform.next_y
+    x, y = entity.transform.next_x, entity.transform.next_y
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
+    if not grid.in_boundaries(x, y):
+        return
 
-    if grid.in_boundaries(x, y):
-        target = grid.grid[x][y]
-        if isinstance(target, Entity):
-            target.object.die()
+    target_cell = grid.grid[x][y]
+    target_entity = target_cell.object
 
+    if isinstance(target_entity, Entity):
+        target_entity.die()
+        
 
 input_neuron_definitions: list[Neuron] = [
     Neuron('I_location_vertically', NeuronType.INPUT, input_func=get_location_vertically),

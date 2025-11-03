@@ -9,21 +9,24 @@ from lifesim.brain.genome import Genome
 
 if TYPE_CHECKING:
     from lifesim.core.simulation import Simulation
+    from lifesim.core.grid import Grid
 
 
 class Entity:
     def __init__(self, genome: Genome, simulation: Simulation) -> None:
         from lifesim.brain.brain import Brain
+        
         self.brain: Brain = Brain(genome, self)
         self.transform: Transform = Transform()
         self.dead: bool = False
         self.simulation: Simulation = simulation
+        self.grid: Grid | None = None 
 
     def __str__(self) -> str:
-        return f'E {self.dead}'
-
-    def __repr__(self) -> str:
-        return self.__str__()
+        return f"E(dead={self.dead})"
+    
+    __repr__ = __str__
+    
 
     @staticmethod
     def int_to_color(n: int) -> tuple[int, int, int]:
@@ -39,7 +42,8 @@ class Entity:
 
     @property
     def color(self) -> tuple[int, int, int]:
-        genes: list[Gene] = self.brain.genome.genes
+        genes = self.brain.genome.genes # lifesim/core/entity.py:45: error: Incompatible types in assignment (expression has type "list[Gene] | None", variable has type "list[Gene]")  [assignment]
+        assert genes is not None  # for mypy
         avg_gene: int = int(sum([int(g) for g in genes]) / len(genes))
         return Entity.int_to_color(avg_gene)
 

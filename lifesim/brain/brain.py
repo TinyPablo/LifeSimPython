@@ -36,7 +36,8 @@ class Brain:
     
     def connect_neurons(self) -> None:
         self.brain_str = ''
-        genes: list[Gene] = self.genome.genes
+        genes = self.genome.genes
+        assert genes is not None  # for mypy
         # print(genes)
 
         for gene in genes:

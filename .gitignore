@@ -11,6 +11,7 @@ simulations/
 *.txt
 *.png
 todo.todo
+*.ini
 
 # ---- Exceptions / Special Files ----
 !/selection_conditions/readme.txt

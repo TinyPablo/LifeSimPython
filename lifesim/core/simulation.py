@@ -35,19 +35,25 @@ class Simulation:
         self.cached_inputs: dict[str, float] = {}
         self._selection_mask: np.ndarray | None = None
         
-        if getattr(self.settings, "selection_condition", None):
+        selection_condition = getattr(self.settings, "selection_condition", None)
+        if selection_condition is not None:
             try:
-                mod = load_selection_condition_module(self.settings.selection_condition.value)
+                mod = load_selection_condition_module(selection_condition.value)
             except Exception as e:
-                raise RuntimeError(f"Failed to load selection condition '{self.settings.selection_condition.value}': {e}")
+                raise RuntimeError(
+                    f"Failed to load selection condition '{selection_condition.value}': {e}"
+                )
 
             if not hasattr(mod, "condition") or not callable(mod.condition):
                 raise RuntimeError(
-                    f"Selection condition module '{self.settings.selection_condition.value}' "
+                    f"Selection condition module '{selection_condition.value}' "
                     "does not define callable 'condition(x, y, w, h)'"
                 )
-        
-        self._selection_condition_callable = mod.condition
+
+            self._selection_condition_callable = mod.condition
+        else:
+            self._selection_condition_callable = None
+            
         self.primary_survival_rate: float = self.get_primary_survival_rate()
     
     def get_primary_survival_rate(self):
@@ -66,7 +72,7 @@ class Simulation:
         self.simulation_loop()
         
     def populate(self) -> None:
-        self.entities: list[Entity] = []
+        self.entities = []
         for _ in range(self.settings.max_entity_count):
             genome: Genome = Genome(self.settings.brain_size)
             entity: Entity = Entity(genome, self)
@@ -207,7 +213,9 @@ class Simulation:
     def selection_condition(self, x: int, y: int) -> bool:
         if self._selection_mask is None:
             self.build_selection_mask()
-        return bool(self._selection_mask[y, x])
+        mask = self._selection_mask
+        assert mask is not None  # for mypy
+        return bool(mask[y, x])
 
     def update_survival_rate(self, alive_entities_count: int) -> None:
         self.survival_rate = alive_entities_count / self.settings.max_entity_count * 100

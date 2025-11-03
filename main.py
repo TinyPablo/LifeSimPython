@@ -9,7 +9,7 @@ from lifesim.utils.utils import timeit
 
 
 @timeit
-def simulation_thread(simulation: Simulation, delay: str) -> None:
+def simulation_thread(simulation: Simulation, delay: int) -> None:
     time.sleep(delay)
     print(f'\n--- starting simulation "{simulation.settings.name}" ---')
     simulation.start()

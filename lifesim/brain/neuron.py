@@ -15,9 +15,10 @@ class Neuron:
         self.input_func: Callable | None = input_func
         
         if self.type == NeuronType.OUTPUT and output_func is None:
-            raise TypeError('OUTPUT NEURON requires output function')
-        self.output_func: Callable = output_func
+            raise TypeError("OUTPUT NEURON requires output function")
 
+        self.output_func: Callable | None = output_func
+    
         self.input_neurons: list['Neuron'] = []
         self.output_neurons: list['Neuron'] = []
 
@@ -41,17 +42,25 @@ class Neuron:
         return self.__str__()
     
     def execute_as_input_neuron(self, entity: Entity) -> None:
-        neuron_output = self.input_func(entity)
-        self.output = neuron_output
+        if self.input_func is not None:
+            neuron_output = self.input_func(entity)
+            self.output = neuron_output
 
     def execute_as_output_neuron(self) -> tuple[Callable, float]:
-            input_neurons_sum = sum([n.output * n.weights[self] for n in self.input_neurons])
+            input_neurons_sum = sum(
+                (n.output or 0.0) * n.weights[self]
+                for n in self.input_neurons
+            )
             neuron_output = tanh(input_neurons_sum)
 
+            assert self.output_func is not None  # for mypy
             return self.output_func, neuron_output
 
     def execute_as_internal_neuron(self) -> None:
-            input_neurons_sum = sum([n.output * n.weights[self] for n in self.input_neurons])
+            input_neurons_sum = sum(
+                (n.output or 0.0) * n.weights[self]
+                for n in self.input_neurons
+            )
             neuron_output = tanh(input_neurons_sum)
             self.output = neuron_output
     

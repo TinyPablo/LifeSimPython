@@ -6,7 +6,7 @@ from lifesim.utils.utils import get_time_now
 
 
 class SimulationSettings:
-    def __init__(self, simulation_id: int, settings_dict: dict = None):
+    def __init__(self, simulation_id: int, settings_dict: dict | None = None):
         self.name: str = f'simulation_{simulation_id}'
 
         self.grid_width: int = 128
