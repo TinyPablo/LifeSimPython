@@ -40,7 +40,7 @@ class Entity:
 
     @property
     def color(self) -> tuple[int, int, int]:
-        genes = self.brain.genome.genes # lifesim/core/entity.py:45: error: Incompatible types in assignment (expression has type "list[Gene] | None", variable has type "list[Gene]")  [assignment]
+        genes = self.brain.genome.genes
         assert genes is not None  # for mypy
         avg_gene: int = int(sum([int(g) for g in genes]) / len(genes))
         return Entity.int_to_color(avg_gene)

@@ -47,9 +47,8 @@ class Neuron:
         return self.__str__()
     
     def execute_as_input_neuron(self, entity: Entity) -> None:
-        if self.input_func is not None:
-            neuron_output = self.input_func(entity)
-            self.output = neuron_output
+        assert self.input_func is not None  # for mypy
+        self.output = self.input_func(entity)
 
     def execute_as_output_neuron(self) -> tuple[Callable, float]:
             input_neurons_sum = sum(
