@@ -92,27 +92,32 @@ class Grid:
         return picture
 
     def save_video(self, pictures: list[np.ndarray], generation: int, survival_rate: float) -> None:
+        pictures_copy = list(pictures)
         def save() -> None:
+            if not pictures_copy:
+                return
             path: str = f"{self.simulation.settings.simulation_directory}/videos"
             os.makedirs(path, exist_ok=True)
             video_path = f'{path}/{self.simulation.settings.name} gen-{generation} surv-{survival_rate:.2f}.avi'
-            
-            original_height, original_width = len(pictures[0]), len(pictures[0][0])
-            height, width = original_height * self.simulation.settings.video_upscale_factor, original_width * self.simulation.settings.video_upscale_factor
-            
+
+            original_height, original_width = len(pictures_copy[0]), len(pictures_copy[0][0])
+            height, width = (
+                original_height * self.simulation.settings.video_upscale_factor,
+                original_width * self.simulation.settings.video_upscale_factor,
+            )
+
             fourcc = cv2.VideoWriter_fourcc(*'MJPG')  # type: ignore[attr-defined]
             video = cv2.VideoWriter(video_path, fourcc, self.simulation.settings.video_framerate, (width, height), isColor=True)
-            
-            for picture in pictures:
+
+            for picture in pictures_copy:
                 frame = np.array(picture, dtype=np.uint8)
                 frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-                
                 upscaled_frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_NEAREST)
                 video.write(upscaled_frame)
-            
+
             video.release()
-        
-        threading.Thread(target=save).start()
+
+        threading.Thread(target=save, daemon=True).start()
 
     def move(self, entity: Entity, direction: Direction) -> None:
         x: int = entity.transform.position_x

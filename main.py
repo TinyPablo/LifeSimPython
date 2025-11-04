@@ -1,16 +1,15 @@
 import threading
-import time
 import cProfile
 import pstats
 
 from lifesim.evolution.selection_conditions.enum import SelectionCondition
 from lifesim.core.simulation import Simulation
 from lifesim.utils.utils import timeit
+from lifesim.visualization.render_toggle_ui import launch_render_ui
 
 
 @timeit
 def simulation_thread(simulation: Simulation, delay: int) -> None:
-    time.sleep(delay)
     print(f'\n--- starting simulation "{simulation.settings.name}" ---')
     simulation.start()
 
@@ -33,25 +32,28 @@ def main() -> None:
             "gene_mutation_probability": 1 / 10_000,
 
             "video_framerate": 40,
-            "video_upscale_factor": 8
+            "video_upscale_factor": 8,
         }
-        for i in range(1)
+        for _ in range(1)
     ]
 
-    threads = []
+    simulations: list[Simulation] = []
+    threads: list[threading.Thread] = []
+
     for i, config in enumerate(simulation_configs):
         sim = Simulation(config)
+        simulations.append(sim)
+
         thread = threading.Thread(target=simulation_thread, args=(sim, i))
         threads.append(thread)
 
-    for t in threads:
-        t.start()
+    for thread in threads:
+        thread.start()
 
-    for t in threads:
-        t.join()
+    launch_render_ui(simulations)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     measure = False
     if measure:
         profiler = cProfile.Profile()
@@ -62,4 +64,4 @@ if __name__ == '__main__':
     if measure:
         profiler.disable()
         stats = pstats.Stats(profiler)
-        stats.sort_stats('cumtime').print_stats(60)
+        stats.sort_stats("cumtime").print_stats(60)

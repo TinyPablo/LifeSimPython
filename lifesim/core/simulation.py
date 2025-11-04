@@ -34,6 +34,7 @@ class Simulation:
         self.generation_start_time: float = 0.0
         self.cached_inputs: dict[str, float] = {}
         self._selection_mask: np.ndarray | None = None
+        self.render_enabled = False
         
         selection_condition = getattr(self.settings, "selection_condition", None)
         if selection_condition is not None:
@@ -105,8 +106,8 @@ class Simulation:
                 entity.brain.process()   
                 entity.performed_actions.clear()
 
-            
-            pictures.append(self.grid.get_picture())
+            if self.render_enabled:
+                pictures.append(self.grid.get_picture())
             self.current_step += 1
 
         self.on_generation_end(pictures)
@@ -119,7 +120,8 @@ class Simulation:
         self.log_generation_summary(elapsed) 
 
         self.reproduce()
-        self.grid.save_video(pictures, self.current_generation, self.survival_rate)
+        if self.render_enabled:
+            self.grid.save_video(pictures, self.current_generation, self.survival_rate)
         self.place_new_generation_entities()
 
     def update_simulation_data(self):
