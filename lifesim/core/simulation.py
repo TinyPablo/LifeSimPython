@@ -205,12 +205,10 @@ class Simulation:
             self.grid.deploy_entity_randomly(entity)
 
     def write_simulation_data(self, generation_data: dict) -> None:
-        simulation_data_path = f"{self.settings.simulation_directory}/simulation_data.json"
-        all_data: list[dict] = self.load_simulation_data()
-
-        with open(simulation_data_path, 'w') as f:
-            all_data.append(generation_data)
-            json.dump(all_data, f)
+        path = f"{self.settings.simulation_directory}/simulation_data.jsonl"
+        with open(path, 'a', encoding='utf-8') as f:
+            json.dump(generation_data, f)
+            f.write('\n')
     
     def selection_condition(self, x: int, y: int) -> bool:
         if self._selection_mask is None:
@@ -221,18 +219,6 @@ class Simulation:
 
     def update_survival_rate(self, alive_entities_count: int) -> None:
         self.survival_rate = alive_entities_count / self.settings.max_entity_count * 100
-
-    def load_simulation_data(self) -> list:
-        simulation_data_path = f"{self.settings.simulation_directory}/simulation_data.json"
-        try:
-            with open(simulation_data_path, 'r') as f:
-                return json.load(f)
-        except FileNotFoundError:
-            with open(simulation_data_path, 'w+') as f:
-                return []
-        except json.JSONDecodeError:
-            with open(simulation_data_path, 'w') as f:
-                return []
             
     def update_cached_inputs(self):  # call once per step
         self.cached_inputs['age'] = self.current_step / self.settings.steps_per_generation
