@@ -5,6 +5,7 @@ from math import tanh
 from typing import TYPE_CHECKING
 
 from lifesim.brain.neuron_type import NeuronType
+from lifesim.utils import rng
 
 if TYPE_CHECKING:
     from lifesim.common.typing import Entity
@@ -50,7 +51,7 @@ class Neuron:
         assert self.input_func is not None  # for mypy
         self.output = self.input_func(entity)
 
-    def execute_as_output_neuron(self) -> tuple[Callable, float]:
+    def execute_as_output_neuron(self, entity: Entity) -> None:
             input_neurons_sum = sum(
                 (n.output or 0.0) * n.weights[self]
                 for n in self.input_neurons
@@ -58,7 +59,9 @@ class Neuron:
             neuron_output = tanh(input_neurons_sum)
 
             assert self.output_func is not None  # for mypy
-            return self.output_func, neuron_output
+            if neuron_output > 0:
+                if neuron_output > rng.random.random():
+                    self.output_func(entity)
 
     def execute_as_internal_neuron(self) -> None:
             input_neurons_sum = sum(

@@ -18,7 +18,8 @@ class Entity:
         self.transform: Transform = Transform()
         self.dead: bool = False
         self.simulation: Simulation = simulation
-        self.grid: Grid | None = None 
+        self.grid: Grid | None = None
+        self.performed_actions: set[str] = set()
 
     def __str__(self) -> str:
         return f"E(dead={self.dead})"

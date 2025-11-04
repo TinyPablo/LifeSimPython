@@ -100,10 +100,7 @@ class Brain:
                 n.execute_as_internal_neuron()
 
             elif n.type == NeuronType.OUTPUT:
-                neuron_action, action_chance = n.execute_as_output_neuron()
-                if action_chance > final_action_chance and neuron_action is not None:
-                    final_action = neuron_action
-                    final_action_chance = action_chance
+                n.execute_as_output_neuron(self.entity)
 
         try:
             final_action(self.entity)

@@ -103,6 +103,7 @@ class Simulation:
             
             for entity in self.entities:
                 entity.brain.process()   
+                entity.performed_actions.clear()
 
             
             pictures.append(self.grid.get_picture())

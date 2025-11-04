@@ -93,63 +93,91 @@ def get_entities_alive(entity: Entity) -> float:
 
 
 # ======= OUTPUT NEURON FUNCTIONS =======
-
 def move_north(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
     grid: Grid | None = entity.grid
-    assert grid is not None  # for mypy
+    assert grid is not None
     grid.move(entity, Direction.UP)
+    entity.performed_actions.add("moved")
 
 
 def move_east(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
     grid: Grid | None = entity.grid
-    assert grid is not None  # for mypy
+    assert grid is not None
     grid.move(entity, Direction.RIGHT)
+    entity.performed_actions.add("moved")
 
 
 def move_south(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
     grid: Grid | None = entity.grid
-    assert grid is not None  # for mypy
+    assert grid is not None
     grid.move(entity, Direction.DOWN)
+    entity.performed_actions.add("moved")
 
 
 def move_west(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
     grid: Grid | None = entity.grid
-    assert grid is not None  # for mypy
+    assert grid is not None
     grid.move(entity, Direction.LEFT)
+    entity.performed_actions.add("moved")
 
 
 def move_forward(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
     grid: Grid | None = entity.grid
-    assert grid is not None  # for mypy
+    assert grid is not None
     grid.move_relative(entity, Direction.UP)
+    entity.performed_actions.add("moved")
 
 
 def reverse(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
     grid: Grid | None = entity.grid
-    assert grid is not None  # for mypy
+    assert grid is not None
     grid.move_relative(entity, Direction.DOWN)
+    entity.performed_actions.add("moved")
 
 
 def move_right(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
     grid: Grid | None = entity.grid
-    assert grid is not None  # for mypy
+    assert grid is not None
     grid.move_relative(entity, Direction.RIGHT)
+    entity.performed_actions.add("moved")
 
 
 def move_left(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
     grid: Grid | None = entity.grid
-    assert grid is not None  # for mypy
+    assert grid is not None
     grid.move_relative(entity, Direction.LEFT)
+    entity.performed_actions.add("moved")
 
 
 def move_random(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
     grid: Grid | None = entity.grid
-    assert grid is not None  # for mypy
+    assert grid is not None
     grid.move(entity, Direction.random())
+    entity.performed_actions.add("moved")
 
 
 def stay_still(entity: Entity) -> None:
-    pass
+    if "moved" in entity.performed_actions:
+        return
+    entity.performed_actions.add("moved")
 
 
 def kys(entity: Entity) -> None:
@@ -159,7 +187,7 @@ def kys(entity: Entity) -> None:
 def kill(entity: Entity) -> None:
     x, y = entity.transform.next_x, entity.transform.next_y
     grid: Grid | None = entity.grid
-    assert grid is not None  # for mypy
+    assert grid is not None
     if not grid.in_boundaries(x, y):
         return
 
