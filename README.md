@@ -1,3 +1,32 @@
+# 🧊 Project Archived — LifeSim (Python Edition)
+
+> **Status:** Archived — 2025  
+> **Reason:** Architectural and language limitations reached  
+> **Next phase:** Brain prototype (Python → C++ rewrite)
+
+This repository contains the original **LifeSimPython** project — initially started around 2022  
+(with long development breaks of months or even over a year) and reactivated for several weeks of active refactoring in 2025.  
+
+It represents the first large-scale evolutionary life simulation written in Python.  
+Throughout recent profiling and structural work, the simulation reached a clear technical limit:  
+even after **very heavy optimization (well beyond 10× faster)**, the architecture itself remains  
+fundamentally inefficient for large-scale neural processing and real-time evolution.  
+Achieving truly emergent behavior would require the simulator to run **hundreds or thousands of times faster**.
+
+Unit tests were planned as the next development step, but after completing the profiling phase,  
+the project was archived instead — to begin designing and prototyping a completely new brain system  
+that could later serve as the foundation for a C++ rewrite with multithreading, and GPU compute shaders.  
+
+Future development will continue as:
+- 🧠 **LifeSimBrainPrototype** — Python-based prototype of the new brain architecture  
+- ⚙️ **LifeSimCpp** — full simulation engine rewrite in C++ for high performance  
+
+---
+
+## 🕒 Historical Documentation
+
+*(Original README preserved below for documentation and historical context.)*
+
 # 🧬 LifeSim — Evolution Simulator
 
 > “You don’t tell life what to do — you just let it happen.”
