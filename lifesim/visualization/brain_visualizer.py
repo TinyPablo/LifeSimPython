@@ -1,6 +1,5 @@
 import igraph
 
-
 g = igraph.Graph.Read_Ncol('net.txt', names=True, weights=True)
 
 for v in g.vs:

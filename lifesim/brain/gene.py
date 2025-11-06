@@ -1,12 +1,10 @@
-import random
-
-from typing import Optional
-from lifesim.brain.connection import ConnectionTipType, ConnectionEndType
+from lifesim.brain.connection import ConnectionEndType, ConnectionTipType
+from lifesim.utils.rng import rng
 
 
 class Gene:
-    def __init__(self, gene: Optional[int] = None) -> None:
-        self._gene: Optional[int] = None
+    def __init__(self, gene:  int | None = None) -> None:
+        self._gene:  int | None = None
         if gene is None:
             self.randomize()
         else:
@@ -23,24 +21,20 @@ class Gene:
         self._gene = value
 
     def randomize(self) -> None:
-        self.gene: int = random.randint(0, 0xFFFF_FFFF)
+        self.gene: int = rng.random.randint(0, 0xFFFF_FFFF)
 
     def __int__(self) -> int:
         return self.gene
 
     def __str__(self) -> str:
-        conn_tip_type_int: int = (self.gene >> 31) & 1
-        conn_tip_neuron_id: int = (self.gene >> 24) & 0b111_1111 
-        conn_end_type_int: int = (self.gene >> 23) & 1
-        conn_tip_neuron_id: int = (self.gene >> 16) & 0b111_1111 
-        conn_weight_raw_int: int = self.gene & 0xFFFF
+        # conn_tip_type_int = (self.gene >> 31) & 1
+        # conn_tip_neuron_id: int = (self.gene >> 24) & 0b111_1111 
+        # conn_end_type_int: int = (self.gene >> 23) & 1
+        # conn_end_neuron_id: int = (self.gene >> 16) & 0b111_1111 
+        # conn_weight_raw_int: int = self.gene & 0xFFFF
 
         return (
             f'GENE {self.gene} {bin(self.gene)[2:].rjust(16, "0")}\n'
-            # f'{(} {self.conn_tip_neuron_type.name}\n'
-            # f'{(self.gene >> 24) & 0b111_1111}\n'
-            # f'{(self.gene >> 23) & 1} {self.conn_end_neuron_type.name}\n'
-            # f'{(self.gene >> 16) & 0b111_1111}\n' #1 101 0110
             f'{self.gene & 0xFFFF} {self.conn_weight}\n')
 
     def __repr__(self) -> str:
@@ -72,10 +66,10 @@ class Gene:
         return n / 0xFFFF * 8 - 4
     
     def try_mutate(self, probability: float):
-        if random.random() < probability:
+        if rng.random.random() < probability:
             self.flip_random_bit()
 
     def flip_random_bit(self) -> None:
-        bit_position = random.randint(0, 31)
+        bit_position = rng.random.randint(0, 31)
         mask = 1 << bit_position
         self.gene ^= mask

@@ -8,3 +8,4 @@ class SelectionCondition(Enum):
     RIGHT_EDGE = "right_edge"
     LEFT_EDGE = "left_edge"
     UPPER_LEFT_SQUARE = "upper_left_square"
+    ALMOST_P = "almost_p"

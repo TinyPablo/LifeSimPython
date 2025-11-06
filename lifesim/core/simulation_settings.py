@@ -1,18 +1,13 @@
 import json
 import os
-import random
-from typing import Dict
 
 from lifesim.evolution.selection_conditions.enum import SelectionCondition
 from lifesim.utils.utils import get_time_now
 
 
 class SimulationSettings:
-    def __init__(self, settings_dict: Dict = None):
-        self.name: str = None
-
-        self.random_seed: bool = False
-        self.seed: int = 0
+    def __init__(self, simulation_id: int, settings_dict: dict | None = None):
+        self.name: str = f'simulation_{simulation_id}'
 
         self.grid_width: int = 128
         self.grid_height: int = 128
@@ -38,28 +33,15 @@ class SimulationSettings:
                 elif hasattr(self, key):
                     setattr(self, key, value)
 
-        self.initialize_seed()
-
-        if not self.name:
-            self.name = f"SIMULATION_{self.seed}"
         self.simulation_directory = f"./simulations/{self.name} {get_time_now()}"
 
         self.save_settings()
 
-    def initialize_seed(self):
-        if self.random_seed:
-            self.seed = random.getrandbits(32)
-        random.seed(self.seed)
-
     def save_settings(self) -> None:
         os.makedirs(self.simulation_directory, exist_ok=True)
-        data: Dict = {
+        data: dict = {
             "general": {
                 "name": self.name
-            },
-            "randomness": {
-                "random_seed": self.random_seed,
-                "seed": self.seed
             },
             "grid": {
                 "width": self.grid_width,

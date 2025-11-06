@@ -1,12 +1,11 @@
-from typing import Optional
 from lifesim.core.entity import Entity
 
 
 class Cell:
     def __init__(self) -> None:
-        self.object: Optional[Entity] = None
+        self.object: Entity | None = None
 
-    def set_object(self, object: Optional[Entity]) -> None:
+    def set_object(self, object: Entity | None) -> None:
         self.object = object
 
     def reset(self) -> None:
@@ -22,7 +21,7 @@ class Cell:
    
     @property
     def is_entity(self) -> bool:
-        return type(self.object) == Entity
+        return isinstance(self.object, Entity)
     
     def __str__(self) -> str:
         return f'C_{self.object.__str__()[0]}'

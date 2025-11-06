@@ -1,17 +1,21 @@
-from typing import List, Callable
+from __future__ import annotations
+
+from collections.abc import Callable
+from typing import TYPE_CHECKING
+
 from lifesim.brain.connection import ConnectionEndType, ConnectionTipType
-from lifesim.brain.gene import Gene
 from lifesim.brain.genome import Genome
 from lifesim.brain.neuron import Neuron
 from lifesim.brain.neuron_type import NeuronType
-from lifesim.core.entity import Entity
 from lifesim.brain.neurons import get_fresh_neurons
 
+if TYPE_CHECKING:
+    from lifesim.common.typing import Entity
 
 class Brain:
-    def __init__(self, genome: Genome, entity: 'Entity') -> None:
+    def __init__(self, genome: Genome, entity: Entity) -> None:
         self.genome: Genome = genome
-        self.entity: 'Entity' = entity
+        self.entity: Entity = entity
         
         self.neurons: list[Neuron] = []
         self.brain_str: str = ''
@@ -23,25 +27,26 @@ class Brain:
         return self.__str__()
 
     @property
-    def input_neurons(self) -> List[Neuron]:
+    def input_neurons(self) -> list[Neuron]:
         return [n for n in self.neurons if n.type == NeuronType.INPUT]
     
     @property
-    def output_neurons(self) -> List[Neuron]:
+    def output_neurons(self) -> list[Neuron]:
         return [n for n in self.neurons if n.type == NeuronType.OUTPUT]
     
     @property
-    def internal_neurons(self) -> List[Neuron]:
+    def internal_neurons(self) -> list[Neuron]:
         return [n for n in self.neurons if n.type == NeuronType.INTERNAL]
     
     def connect_neurons(self) -> None:
-        self.brain_str: str = ''
-        genes: List[Gene] = self.genome.genes
+        self.brain_str = ''
+        genes = self.genome.genes
+        assert genes is not None  # for mypy
         # print(genes)
 
         for gene in genes:
-            input_neuron_list: List[Neuron] = list()
-            output_neuron_list: List[Neuron] = list()
+            input_neuron_list: list[Neuron] = list()
+            output_neuron_list: list[Neuron] = list()
 
             if gene.conn_tip_neuron_type == ConnectionTipType.INPUT or not self.internal_neurons:
                 input_neuron_list = self.input_neurons
@@ -65,7 +70,7 @@ class Brain:
                 
                 Neuron.connect_neurons(input_neuron, output_neuron, gene.conn_weight) 
                 # print(f"STATUS: <SUCCESS>")
-            except ValueError as e:
+            except ValueError:
                 pass
                 # print("STATUS <FAILED>")
                 # print(f'Reason: {e}')
@@ -77,15 +82,16 @@ class Brain:
         self.neurons = get_fresh_neurons(self.entity.simulation.settings)
         self.connect_neurons()
         Neuron.sort(self.neurons)
-        Neuron.filter(self.neurons)
+        Neuron.filter_and_prune(self.neurons)
 
     def process(self) -> None:
-        final_action: Callable = lambda: None
+        def _noop(): 
+            return None
+        
+        final_action: Callable = _noop
         final_action_chance: float = float('-inf')
         
         for n in self.neurons:
-            if n.disabled:
-                continue
 
             if n.type == NeuronType.INPUT:
                 n.execute_as_input_neuron(self.entity)
@@ -94,12 +100,9 @@ class Brain:
                 n.execute_as_internal_neuron()
 
             elif n.type == NeuronType.OUTPUT:
-                neuron_action, action_chance = n.execute_as_output_neuron()
-                if action_chance > final_action_chance and neuron_action is not None:
-                    final_action = neuron_action
-                    final_action_chance = action_chance
+                n.execute_as_output_neuron(self.entity)
 
         try:
             final_action(self.entity)
-        except Exception as e:
+        except Exception:
             pass

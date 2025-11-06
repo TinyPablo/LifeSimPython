@@ -1,37 +1,44 @@
-from math import tanh
-from typing import Callable, Dict, List, Optional, Set
+from __future__ import annotations
 
-from lifesim.core.entity import Entity
+from collections.abc import Callable
+from math import tanh
+from typing import TYPE_CHECKING
+
 from lifesim.brain.neuron_type import NeuronType
+from lifesim.utils import rng
+
+if TYPE_CHECKING:
+    from lifesim.common.typing import Entity
 
 
 class Neuron:
-    def __init__(self, name: str, type: NeuronType, *, input_func: Optional[Callable] = None, output_func: Optional[Callable] = None) -> None:
+    def __init__(self, name: str, type: NeuronType, *, input_func: Callable | None = None, output_func: Callable | None = None) -> None:
         self.name: str = name
         self.type: NeuronType = type
         
         if self.type == NeuronType.INPUT and input_func is None:
             raise TypeError('INPUT NEURON requires input function')
-        self.input_func: Optional[Callable] = input_func
+        self.input_func: Callable | None = input_func
         
         if self.type == NeuronType.OUTPUT and output_func is None:
-            raise TypeError('OUTPUT NEURON requires output function')
-        self.output_func: Optional[Callable] = output_func
+            raise TypeError("OUTPUT NEURON requires output function")
 
-        self.input_neurons: List['Neuron'] = []
-        self.output_neurons: List['Neuron'] = []
+        self.output_func: Callable | None = output_func
+    
+        self.input_neurons: list[Neuron] = []
+        self.output_neurons: list[Neuron] = []
 
-        self.weights: Dict['Neuron', float] = {}
+        self.weights: dict[Neuron, float] = {}
 
-        self.output: Optional[float] = None 
+        self.output: float | None = None 
         self.disabled: bool = False
 
     def disable(self) -> None:
         self.disabled = True
 
     def __str__(self) -> str:
-        input_names: List[str] = ', '.join([neuron.name for neuron in self.input_neurons])
-        output_names: List[str] = ', '.join([neuron.name for neuron in self.output_neurons])
+        input_names: str = ', '.join([neuron.name for neuron in self.input_neurons])
+        output_names: str = ', '.join([neuron.name for neuron in self.output_neurons])
 
         input_names = 'NONE' if input_names == '' else input_names
         output_names = 'NONE' if output_names == '' else output_names
@@ -41,22 +48,31 @@ class Neuron:
         return self.__str__()
     
     def execute_as_input_neuron(self, entity: Entity) -> None:
-        neuron_output = self.input_func(entity)
-        self.output = neuron_output
+        assert self.input_func is not None  # for mypy
+        self.output = self.input_func(entity)
 
-    def execute_as_output_neuron(self) -> tuple[Callable, float]:
-            input_neurons_sum = sum([n.output * n.weights[self] for n in self.input_neurons])
+    def execute_as_output_neuron(self, entity: Entity) -> None:
+            input_neurons_sum = sum(
+                (n.output or 0.0) * n.weights[self]
+                for n in self.input_neurons
+            )
             neuron_output = tanh(input_neurons_sum)
 
-            return self.output_func, neuron_output
+            assert self.output_func is not None  # for mypy
+            if neuron_output > 0:
+                if neuron_output > rng.random.random():
+                    self.output_func(entity)
 
     def execute_as_internal_neuron(self) -> None:
-            input_neurons_sum = sum([n.output * n.weights[self] for n in self.input_neurons])
+            input_neurons_sum = sum(
+                (n.output or 0.0) * n.weights[self]
+                for n in self.input_neurons
+            )
             neuron_output = tanh(input_neurons_sum)
             self.output = neuron_output
     
     @staticmethod
-    def connect_neurons(tip_neuron: 'Neuron', end_neuron: 'Neuron', connection_weight: float) -> None:
+    def connect_neurons(tip_neuron: Neuron, end_neuron: Neuron, connection_weight: float) -> None:
         if tip_neuron.type == NeuronType.OUTPUT:
             raise ValueError("TIP neuron cannot be OUTPUT NEURON")
         
@@ -83,8 +99,8 @@ class Neuron:
         tip_neuron.weights[end_neuron] = connection_weight 
 
     @staticmethod
-    def detect_cycle(start: 'Neuron') -> bool:
-        def visit(neuron: 'Neuron', visited: Set['Neuron'], rec_stack: Set['Neuron']) -> bool:
+    def detect_cycle(start: Neuron) -> bool:
+        def visit(neuron: Neuron, visited: set[Neuron], rec_stack: set[Neuron]) -> bool:
             if neuron not in visited:
                 visited.add(neuron)
                 rec_stack.add(neuron)
@@ -98,16 +114,16 @@ class Neuron:
                 rec_stack.remove(neuron)
             return False
 
-        visited: Set[Neuron] = set()
-        rec_stack: Set[Neuron] = set()
+        visited: set[Neuron] = set()
+        rec_stack: set[Neuron] = set()
         return visit(start, visited, rec_stack)
 
     @staticmethod
-    def sort(neurons: List['Neuron']):
+    def sort(neurons: list[Neuron]):
         input_counts = {neuron: len(neuron.input_neurons) for neuron in neurons}
 
-        sorted_neurons: List['Neuron'] = []
-        no_incoming: List['Neuron'] = [n for n in neurons if input_counts[n] == 0]
+        sorted_neurons: list[Neuron] = []
+        no_incoming: list[Neuron] = [n for n in neurons if input_counts[n] == 0]
 
         while no_incoming:
             n: Neuron = no_incoming.pop()
@@ -124,27 +140,20 @@ class Neuron:
         sorted_map = {neuron.name: index for index, neuron in enumerate(sorted_neurons)}
         neurons.sort(key=lambda neuron: sorted_map.get(neuron.name, float('inf')))
 
-        return neurons
-    
     @staticmethod
-    def filter(neurons: List['Neuron']) -> None:
-        for neuron in neurons:
-
-            if neuron.type == NeuronType.INPUT:
-                if not neuron.output_neurons:
-                    neuron.disable()
+    def filter_and_prune(neurons: list['Neuron']) -> None:
+        pruned = []
+        for n in neurons:
+            if n.type == NeuronType.INPUT:
+                if not n.output_neurons:
                     continue
-
-            if neuron.type == NeuronType.OUTPUT:
-                if not neuron.input_neurons:
-                    neuron.disable()
+            elif n.type == NeuronType.OUTPUT:
+                if not n.input_neurons:
                     continue
-
-            if neuron.type == NeuronType.INTERNAL:
-                if not neuron.output_neurons:
-                    neuron.disable()
+            elif n.type == NeuronType.INTERNAL:
+                if not n.output_neurons:
                     continue
-
-            if not (neuron.input_neurons or neuron.output_neurons):
-                neuron.disable()
+            if not (n.input_neurons or n.output_neurons):
                 continue
+            pruned.append(n)
+        neurons[:] = pruned

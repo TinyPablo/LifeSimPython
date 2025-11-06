@@ -1,26 +1,33 @@
-from typing import Dict, List
-import matplotlib.pyplot as plt
 import json
 import os
-from matplotlib.animation import FuncAnimation
+
+import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.animation import FuncAnimation
 
 paths = [
-    '/Users/pawel/Documents/Python/LifeSimPython/simulations/sim1 27-10-2025 18:51:14'
+    '/Users/pawel/Documents/Python/LifeSimPython/simulations/simulation_1 04-11-2025 07:19:05',
+    '/Users/pawel/Documents/Python/LifeSimPython/simulations/simulation_2 04-11-2025 07:19:05',
 ]
 
 
 def load_data(path: str):
-    with open(os.path.join(path, 'settings.json'), 'r') as f:
-        simulation_settings: Dict = json.load(f)
+    with open(os.path.join(path, 'settings.json'), 'r', encoding='utf-8') as f:
+        simulation_settings: dict = json.load(f)
 
-    with open(os.path.join(path, 'simulation_data.json'), 'r') as f:
-        simulation_data: List[Dict] = json.load(f)
+    data_path = os.path.join(path, 'simulation_data.jsonl')
+    simulation_data: list[dict] = []
+    if os.path.exists(data_path):
+        with open(data_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    simulation_data.append(json.loads(line))
 
     return simulation_settings, simulation_data
 
 
-def smooth(data: List[float], window_size: int = 20) -> List[float]:
+def smooth(data: list[float], window_size: int = 20) -> list[float]:
     if len(data) < window_size:
         return data
     kernel = np.ones(window_size) / window_size
@@ -31,8 +38,8 @@ def smooth(data: List[float], window_size: int = 20) -> List[float]:
 def process_data(path: str):
     simulation_settings, simulation_data = load_data(path)
 
-    generations = [d['generation'] for d in simulation_data]
-    survival_rates = [d['survival_rate'] for d in simulation_data]
+    generations = [d.get('generation', 0) for d in simulation_data]
+    survival_rates = [d.get('survival_rate', 0.0) for d in simulation_data]
 
     return generations, survival_rates
 

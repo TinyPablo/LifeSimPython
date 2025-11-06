@@ -1,20 +1,15 @@
-from copy import deepcopy
-import math
-import random
-from typing import TYPE_CHECKING, List
+from __future__ import annotations
 
-from lifesim.utils.direction import Direction
-from lifesim.core.entity import Entity
-from lifesim.core.grid import Grid
+from typing import TYPE_CHECKING
+
 from lifesim.brain.neuron import Neuron
 from lifesim.brain.neuron_type import NeuronType
-from lifesim.core.simulation import Simulation
-from lifesim.core.simulation_settings import SimulationSettings
-
+from lifesim.utils.direction import Direction
+from lifesim.utils.rng import rng
 
 if TYPE_CHECKING:
-    from lifesim.core.entity import Entity
-
+    from lifesim.common.typing import (Entity, Grid, Simulation,
+                                       SimulationSettings)
 
 # ======= INPUT NEURON FUNCTIONS =======
 
@@ -43,43 +38,46 @@ def get_distance_west(entity: Entity) -> float:
 
 
 def get_age(entity: Entity) -> float:
-    simulation: Simulation = entity.simulation
-    return simulation.current_step / simulation.settings.steps_per_generation
+    return entity.simulation.cached_inputs['age']
 
 
 def random_float(entity: Entity) -> float:
-    return random.random()
+    return rng.random.random()
 
 
 def get_blockage_forward(entity: Entity) -> float:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     blockage_forward: bool = grid.blockage_in_direction(entity, entity.transform.direction)
     return 1.0 if blockage_forward else 0.0
 
 
 def get_blockage_north(entity: Entity) -> float:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     return 1.0 if grid.blockage_in_direction(entity, Direction.UP) else 0.0
 
 
 def get_blockage_east(entity: Entity) -> float:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     return 1.0 if grid.blockage_in_direction(entity, Direction.RIGHT) else 0.0
 
 
 def get_blockage_south(entity: Entity) -> float:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     return 1.0 if grid.blockage_in_direction(entity, Direction.DOWN) else 0.0
 
 
 def get_blockage_west(entity: Entity) -> float:
-    grid: Grid = entity.grid
+    grid: Grid | None = entity.grid
+    assert grid is not None  # for mypy
     return 1.0 if grid.blockage_in_direction(entity, Direction.LEFT) else 0.0
 
 
 def oscilator_input(entity: Entity) -> float:
-    simulation: Simulation = entity.simulation
-    return 0.5 * (math.sin((2 * math.pi * simulation.current_step) / simulation.settings.steps_per_generation) + 1)
+    return entity.simulation.cached_inputs['oscillator']
 
 
 def meets_condition_input(entity: Entity) -> float:
@@ -95,78 +93,118 @@ def get_entities_alive(entity: Entity) -> float:
 
 
 # ======= OUTPUT NEURON FUNCTIONS =======
-
-def move_north(entity: Entity) -> float:
-    grid: Grid = entity.grid
+def move_north(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
+    grid: Grid | None = entity.grid
+    assert grid is not None
     grid.move(entity, Direction.UP)
+    entity.performed_actions.add("moved")
 
 
-def move_east(entity: Entity) -> float:
-    grid: Grid = entity.grid
+def move_east(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
+    grid: Grid | None = entity.grid
+    assert grid is not None
     grid.move(entity, Direction.RIGHT)
+    entity.performed_actions.add("moved")
 
 
-def move_south(entity: Entity) -> float:
-    grid: Grid = entity.grid
+def move_south(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
+    grid: Grid | None = entity.grid
+    assert grid is not None
     grid.move(entity, Direction.DOWN)
+    entity.performed_actions.add("moved")
 
 
-def move_west(entity: Entity) -> float:
-    grid: Grid = entity.grid
+def move_west(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
+    grid: Grid | None = entity.grid
+    assert grid is not None
     grid.move(entity, Direction.LEFT)
+    entity.performed_actions.add("moved")
 
 
-def move_forward(entity: Entity) -> float:
-    grid: Grid = entity.grid
+def move_forward(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
+    grid: Grid | None = entity.grid
+    assert grid is not None
     grid.move_relative(entity, Direction.UP)
+    entity.performed_actions.add("moved")
 
 
-def reverse(entity: Entity) -> float:
-    grid: Grid = entity.grid
+def reverse(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
+    grid: Grid | None = entity.grid
+    assert grid is not None
     grid.move_relative(entity, Direction.DOWN)
+    entity.performed_actions.add("moved")
 
 
-def move_right(entity: Entity) -> float:
-    grid: Grid = entity.grid
+def move_right(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
+    grid: Grid | None = entity.grid
+    assert grid is not None
     grid.move_relative(entity, Direction.RIGHT)
+    entity.performed_actions.add("moved")
 
 
-def move_left(entity: Entity) -> float:
-    grid: Grid = entity.grid
+def move_left(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
+    grid: Grid | None = entity.grid
+    assert grid is not None
     grid.move_relative(entity, Direction.LEFT)
+    entity.performed_actions.add("moved")
 
 
-def move_random(entity: Entity) -> float:
-    grid: Grid = entity.grid
+def move_random(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
+    grid: Grid | None = entity.grid
+    assert grid is not None
     grid.move(entity, Direction.random())
+    entity.performed_actions.add("moved")
 
 
-def stay_still(entity: Entity) -> float:
-    pass
+def stay_still(entity: Entity) -> None:
+    if "moved" in entity.performed_actions:
+        return
+    entity.performed_actions.add("moved")
 
 
-def kys(entity: Entity) -> float:
+def kys(entity: Entity) -> None:
     entity.die()
 
 
-def kill(entity: Entity) -> float:
-    grid: Grid = entity.grid
-    x: int = entity.transform.next_x
-    y: int = entity.transform.next_y
+def kill(entity: Entity) -> None:
+    x, y = entity.transform.next_x, entity.transform.next_y
+    grid: Grid | None = entity.grid
+    assert grid is not None
+    if not grid.in_boundaries(x, y):
+        return
 
-    if grid.in_boundaries(x, y):
-        target = grid.grid[x][y]
-        if isinstance(target, Entity):
-            target.object.die()
+    target_cell = grid.grid[x][y]
+    target_entity = target_cell.object
 
+    if isinstance(target_entity, Entity):
+        target_entity.die()
+        
 
-input_neuron_definitions: List[Neuron] = [
+input_neuron_definitions: list[Neuron] = [
     Neuron('I_location_vertically', NeuronType.INPUT, input_func=get_location_vertically),
     Neuron('I_location_horizontally', NeuronType.INPUT, input_func=get_location_horizontally),
     Neuron('I_distance_to_north_border', NeuronType.INPUT, input_func=get_distance_north),
     Neuron('I_distance_to_east_border', NeuronType.INPUT, input_func=get_distance_east),
     Neuron('I_distance_to_south_border', NeuronType.INPUT, input_func=get_distance_south),
-    Neuron('I_distance_to_west_border', NeuronType.INPUT, input_func=get_blockage_west),
+    Neuron('I_distance_to_west_border', NeuronType.INPUT, input_func=get_distance_west),
     Neuron('I_age', NeuronType.INPUT, input_func=get_age),
     Neuron('I_random_float', NeuronType.INPUT, input_func=random_float),
     Neuron('I_blockage_forward', NeuronType.INPUT, input_func=get_blockage_forward),
@@ -180,7 +218,7 @@ input_neuron_definitions: List[Neuron] = [
 ]
 
 
-output_neuron_definitions: List[Neuron] = [
+output_neuron_definitions: list[Neuron] = [
     Neuron('O_move_forward', NeuronType.OUTPUT, output_func=move_forward),
     Neuron('O_reverse', NeuronType.OUTPUT, output_func=reverse),
     Neuron('O_move_random', NeuronType.OUTPUT, output_func=move_random),
@@ -193,15 +231,13 @@ output_neuron_definitions: List[Neuron] = [
     # Neuron('kill', NeuronType.OUTPUT, output_func=kill),
 ]
 
+def get_fresh_neurons(settings: SimulationSettings) -> list[Neuron]:
+    internal_count = settings.max_internal_neurons
+    internal_neurons = [Neuron(f'internal_{i+1}', NeuronType.INTERNAL) for i in range(internal_count)]
 
-def get_fresh_neurons(settings: SimulationSettings) -> List[Neuron]:
-    internal_neuron_definitions: List[Neuron] = [
-        Neuron(f'internal_{i+1}', NeuronType.INTERNAL)
-        for i in range(settings.max_internal_neurons)
-        ]
-    neuron_definitions: List[Neuron] = [
-        *input_neuron_definitions,
-        *output_neuron_definitions,
-        *internal_neuron_definitions
-        ]
-    return deepcopy(neuron_definitions)
+    neurons = (
+        [Neuron(n.name, n.type, input_func=n.input_func, output_func=n.output_func)
+         for n in input_neuron_definitions + output_neuron_definitions] +
+        internal_neurons
+    )
+    return neurons
