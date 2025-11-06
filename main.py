@@ -17,17 +17,17 @@ def simulation_thread(simulation: Simulation, delay: int) -> None:
 def main() -> None:
     simulation_configs = [
         {
-            "grid_width": 128,
-            "grid_height": 128,
+            "grid_width": 80,
+            "grid_height": 80,
 
-            "steps_per_generation": 196,
-            "max_generations": 10,
-            "selection_condition": SelectionCondition.ALMOST_P.value,
+            "steps_per_generation": 120,
+            "max_generations": 1_000_000,
+            "selection_condition": SelectionCondition.BOTTOM_RIGHT_SQUARE,
 
-            "max_entity_count": 1280,
-            "brain_size": 6,
-            "max_internal_neurons": 2,
-            "fresh_minds": 12,
+            "max_entity_count": 250,
+            "brain_size": 10,
+            "max_internal_neurons": 8,
+            "fresh_minds": 10,
 
             "gene_mutation_probability": 1 / 10_000,
 
